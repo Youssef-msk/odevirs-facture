@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BlHead index{% endblock %}
+
+{% block body %}
+    <h1>BlHead index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Reference</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Commentaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for bl_head in bl_heads %}
+            <tr>
+                <td>{{ bl_head.id }}</td>
+                <td>{{ bl_head.reference }}</td>
+                <td>{{ bl_head.date ? bl_head.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ bl_head.status }}</td>
+                <td>{{ bl_head.commentaire }}</td>
+                <td>
+                    <a href="{{ path('app_bl_head_show', {'id': bl_head.id}) }}">show</a>
+                    <a href="{{ path('app_bl_head_edit', {'id': bl_head.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_bl_head_new') }}">Create new</a>
+{% endblock %}

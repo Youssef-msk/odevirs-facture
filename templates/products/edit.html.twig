@@ -1,0 +1,484 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion stock produits{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb p-0 mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_products_index') }}">Gestion stock produits</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {% if app.current_route == "app_products_new" %}
+                                            Ajouter un nouveau produit
+                                        {% else %}
+                                            Détails/Modification Produit
+                                        {% endif %}
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a href="{{ path('app_products_index') }}" class="btn btn-primary btn-sm d-flex align-items-center justify-content-between ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ml-2">Retour</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3 d-flex justify-content-between">
+                    <h4 class="font-weight-bold d-flex align-items-center">
+                        {% if app.current_route == "app_products_new" %}
+                            Ajouter un nouveau produit
+                        {% else %}
+                            Détails/Modification Produit
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="font-weight-bold mb-3">Informations de base :</h5>
+                                    {{ form_start(form,{'attr': {'class': '','id': 'saveForm'}}) }}
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text1" class="form-label font-weight-bold text-muted text-uppercase">Designation :</label>
+                                            {{ form_widget(form.name,{'attr': {'class': 'form-control','placeholder':'Designation'}}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text1" class="form-label font-weight-bold text-muted text-uppercase">Designation commerciale :</label>
+                                            {{ form_widget(form.nameCommerciale,{'attr': {'class': 'form-control','placeholder':'Designation commerciale'}}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text2" class="form-label font-weight-bold text-muted text-uppercase">Référence :</label>
+                                            {{ form_widget(form.ref,{'attr': {'class': 'form-control','placeholder':'Référence'}}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text4" class="form-label font-weight-bold text-muted text-uppercase">Marque :</label>
+                                            {{ form_widget(form.brand,{'attr': {'class': 'form-control','placeholder':'Marque'}}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text5" class="form-label font-weight-bold text-muted text-uppercase">Stock physique : </label>
+                                            {{ form_widget(form.quantity,{'attr': {'class': 'form-control','placeholder':'Stock physique'}}) }}
+                                        </div>
+                                    </div>
+                                    {% if app.request.query.get('show') != 1 %}
+                                    <h5 class="font-weight-bold mb-3">Informations Achat :</h5>  <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target=".modal-add-customer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Ajouter un nouveau fournisseur
+                                    </button>
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="inputState" class="form-label font-weight-bold text-muted text-uppercase">Fournisseur : </label>
+                                            {{ form_widget(form.distributor,{'attr': {'class': 'form-select form-control choicesjsSelect2','placeholder':'Fournisseur produit'}}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Prix achat :</label>
+                                            {{ form_widget(form.priceReduced,{'attr': {'class': 'form-control','step':'0.01','placeholder':'Prix'},'type':'number'}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Prix revient :</label>
+                                            {{ form_widget(form.priceRevient,{'attr': {'class': 'form-control','step':'0.01','placeholder':'Prix'},'type':'number'}) }}
+                                        </div>
+                                    </div>
+                                    <h5 class="font-weight-bold mb-3">Informations Vente:</h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text7" class="form-label font-weight-bold text-muted text-uppercase">Prix vente (TTC) :</label>
+                                            {{ form_widget(form.price,{'attr': {'class': 'form-control','step':'0.01','placeholder':'Prix vente'},'type':'number'}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="products_rateType" class="form-label font-weight-bold text-muted text-uppercase">TAXE:</label>
+                                            <select id="products_rateType" name="products[rateType]" class="multipleSelect2 form-control choicesjs products_rateType" multiple="false">
+                                                {% for rate in rate_list %}
+                                                    <option value="{{ rate.value }}" {% if rate.value == "default_taxe" %} selected {% endif %}>{{ rate.label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text9" class="form-label font-weight-bold text-muted text-uppercase">Prix vente (HT):</label>
+                                            {{ form_widget(form.priceHt,{'attr': {'class': 'form-control','step':'0.01','placeholder':'Prix vente HT'},'type':'number'}) }}
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text9" class="form-label font-weight-bold text-muted text-uppercase">Valeur TAXE:</label>
+                                            {{ form_widget(form.rate,{'attr': {'class': 'form-control','readonly':'readonly','placeholder':'TAXE'},'type':'number'}) }}
+                                        </div>
+                                    </div>
+                                    {% if app.current_route == "aapp_products_new" %}
+                                        <h5 class="font-weight-bold mb-3">Liste des Fournisseurs :</h5>
+                                        <div class="row g-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="inputState" class="form-label font-weight-bold text-muted text-uppercase">Fournisseur : </label>
+
+                                            </div>
+
+                                        </div>
+                                    {% endif %}
+                                    {% endif %}
+                                    <h5 class="font-weight-bold mb-3">Image :</h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label class="custom-file-label" for="products_imageFile_file">Choisir un fichier</label>
+                                            <input type="file" id="products_imageFile_file" name="products[imageFile][file]" class="custom-file-input">
+                                        </div>
+                                    </div>
+                                    <input type="submit" id="saveFormSubmit" style="display: none">
+                                    {{ form_widget(form._token) }}
+                                    {{ form_end(form, {'render_rest': false}) }}
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <div>
+                                                    <ul class="list-style-1 mb-0">
+                                                        <div class="card-body rounded bg-white">
+                                                            <div class="d-flex justify-content-center">
+                                                                <img  alt="{{ product.name }}" src="{{ vich_uploader_asset(product, 'imageFile') }}" class="img-thumbnail w-100 img-fluid rounded">
+                                                            </div>
+                                                        </div>
+                                                    </ul>
+                                                </div>
+                                                {% if app.request.query.get('show') != 1 %}
+                                                <div class="row mt-3">
+                                                    <div class="col-6 text-center mb-2">
+                                                        <button class="btn btn-block btn-sm btn-primary" id="save">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" fill="none"  width="20"   viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5" />
+                                                            </svg>
+                                                            <span class="">Sauvegarder</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-6 text-center">
+                                                        <button class="btn btn-block btn-sm btn-secondary">
+                                                            <span class="">Désactiver</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </li>
+                                            <li class="list-group-item">
+                                                <table class="table table-borderless mb-0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="p-0">
+                                                            <p class="mb-0 text-muted">Inventaire</p>
+                                                        </td>
+                                                        <td>
+                                                            {% if product.enabled == 1 %}
+                                                                {% if product.quantity > 0 %}
+                                                                    {% if product.quantity > 10 %}
+
+                                                                        <p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">
+                                                                            <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                                    <circle cx="12" cy="12" r="8" fill="#3cb72c"></circle></svg>
+                                                                            </small>En stock
+                                                                        </p>
+
+                                                                    {% else %}
+
+                                                                        <p class="mb-0 text-warning font-weight-bold d-flex justify-content-start align-items-center">
+                                                                            <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                                    <circle cx="12" cy="12" r="8" fill="#db7e06"></circle></svg>
+                                                                            </small>Limitée
+                                                                        </p>
+
+                                                                    {% endif %}
+                                                                {% else %}
+
+                                                                    <p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">
+                                                                        <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                                <circle cx="12" cy="12" r="8" fill="#F42B3D"></circle></svg>
+                                                                        </small>Rupture de stock
+                                                                    </p>
+
+                                                                {% endif %}
+                                                            {% else %}
+
+                                                                <p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">
+                                                                    <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                            <circle cx="12" cy="12" r="8" fill="#F42B3D"></circle></svg>
+                                                                    </small>Inactif
+                                                                </p>
+
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-0">
+                                                            <p class="mb-0 text-muted">Status</p>
+                                                        </td>
+                                                        <td>
+                                                            {% if product.enabled == 1 %}
+                                                                <p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">
+                                                                    <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                            <circle cx="12" cy="12" r="8" fill="#3cb72c"></circle></svg>
+                                                                    </small> Activé
+                                                                </p>
+
+                                                            {% else %}
+
+                                                                <p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">
+                                                                    <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                            <circle cx="12" cy="12" r="8" fill="#F42B3D"></circle></svg>
+                                                                    </small>Inactif
+                                                                </p>
+
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td class="p-0">
+                                                            <p class="mb-0 text-muted">Quantity Vendu</p>
+                                                        </td>
+                                                        {% set totalQuantity = 0 %}
+                                                        {% for item in product.salesProducts %}
+                                                            {% set totalQuantity = totalQuantity + item.quantity %}
+                                                        {% endfor %}
+
+                                                        <td>
+                                                            {{ totalQuantity }}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td class="p-0">
+                                                            <p class="mb-0 text-muted">Total Facture</p>
+                                                        </td>
+                                                        <td>
+                                                            {{ product.salesProducts|length }}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td class="p-0">
+                                                            <p class="mb-0 text-muted">Total des factures</p>
+                                                        </td>
+                                                        <td>
+                                                            {{ totalSales|number_format(2, ',', ' ') }} {{ local_money_upper }}
+                                                        </td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item p-3">
+                                    <h5 class="font-weight-bold mb-3">Liste des ventes</h5>
+                                </li>
+                                <li class="list-group-item p-0">
+                                    <div class="table-responsive">
+                                        <table class="table data-table mb-0">
+                                            <thead class="table-color-heading">
+                                            <tr class="text-light">
+                                                <th scope="col">
+                                                    <label class="text-muted m-0" >Réference</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0">Client</label>
+                                                </th>
+                                                <th scope="col" class="dates">
+                                                    <label class="text-muted mb-0" >Date</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Statut</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Total HT</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Total TTC</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <span class="text-muted" >Action</span>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for sale in salesForProduct %}
+                                                <tr class="white-space-no-wrap">
+                                                    <td>
+                                                        {{ sale.reference }}
+                                                    </td>
+                                                    <td>{{ sale.customer.company }}</td>
+                                                    <td>
+                                                        {{ sale.createdAt|date('d/m/Y H:i:s') }}
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">
+                                                            <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                    <circle cx="12" cy="12" r="8" fill="#3cb72c"></circle></svg>
+                                                            </small>{{ sale.status.label }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ sale.amoutTotalHt|number_format(2, ',',' ') }} DH
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ sale.amountTotalTtc|number_format(2, ',',' ') }} DH
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="d-flex justify-content-end align-items-center">
+                                                            <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier" href="{{ path('app_sales_edit',{'id':sale.id}) }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="text-secondary" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                                </svg>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
+                                <li class="list-group-item p-3">
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        Totale: <p class="ml-2 mb-0 font-weight-bold"> {{ totalSales|number_format(2, ',', ' ') }} {{ local_money_upper }}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade modal-add-customer" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajout nouveau fournisseur</h5>
+                    <button type="button" class="close button-modal-add-customer" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="saleNewCustomer" method="post">
+                        <div class="form-group">
+                            <label for="company">Raison sociale:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[company]" id="company">
+                        </div>
+                        <div class="form-group">
+                            <label for="ice">ICE:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[ice]" id="ice">
+                        </div>
+                        <div class="form-group">
+                            <label for="adresse">Adresse:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[adresse]" id="adresse">
+                        </div>
+                        <div class="form-group">
+                            <label for="mail">Téléphone:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[tel]" id="tel">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-secondary" id="addNewCutomer">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptfooter %}
+    <script>
+        $('#save').on('click',function(){
+            $('#saveFormSubmit').click();
+        });
+
+
+        $('#products_rateType').on('change',function(){
+            calculatePricesFromTaxe()
+        });
+
+        $('#products_price').on('change',function(){
+            calculatePricesFromTaxe()
+        });
+
+        $('#products_price').on('keyup',function(){
+            calculatePricesFromTaxe()
+        });
+
+        $(document).ready(function(){
+            $('#products_rateType').change();
+
+            $(".choicesjsSelect2").select2({
+                placeholder: 'Séléctionner un fournisseur',
+                allowClear: true
+            });
+
+            $('#addNewCutomer').click(function() {
+                var form = $('#saleNewCustomer');
+                $.ajax({
+                    type:"POST",
+                    url : "{{ path('app_distributor_sales_add') }}",
+                    data: form.serialize(),
+                    success : function(response) {
+                        if(response == "nok_rs"){
+                            swal("Raison sociale obligatoire", "", "error");
+                        }else{
+                            swal("Fournisseur ajouté", "", "success");
+                            // Create the DOM option that is pre-selected by default
+                            var newState = new Option(response.company, response.id, true, true);
+                            // Append it to the select
+                            $(".choicesjsSelect2").append(newState).trigger('change');
+                            $('#saleNewCustomer').trigger("reset");
+                            $('.button-modal-add-customer').click();
+                        }
+                    },
+                    error: function() {
+                        alert('le champs Raison sociale est obligatoire');
+                    }
+                });
+            });
+        });
+
+        function calculatePricesFromTaxe(){
+            var rateValue =  $('#products_rateType').val();
+
+            if(rateValue == "default_taxe"){
+                var newPriceTTc =  $('#products_price').val();
+                var newRate  =  ($('#products_price').val() / 1.2) * 0.2;
+                var newPriceHt = (newPriceTTc - newRate);
+                $('#products_rate').val((newPriceTTc - newPriceHt).toFixed(2));
+                $('#products_priceHt').val(newPriceHt.toFixed(2));
+            }else {
+                var priceTTC = $('#products_price').val(); // Price including tax
+                var vatRate = parseInt(rateValue) / 100; // 20% VAT rate
+                $('#products_rate').val((priceTTC - calculatePriceExcludingTax(priceTTC, vatRate)).toFixed(2));
+                $('#products_priceHt').val(calculatePriceExcludingTax(priceTTC, vatRate));
+            }
+        }
+
+        function calculatePriceExcludingTax(priceTTC, vatRate) {
+            var priceHT = priceTTC / (1 + vatRate);
+            return priceHT.toFixed(2); // Round the result to 2 decimal places
+        }
+    </script>
+{% endblock  %}
+

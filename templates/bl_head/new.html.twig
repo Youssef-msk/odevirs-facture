@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New BlHead{% endblock %}
+
+{% block body %}
+    <h1>Create new BlHead</h1>
+
+    {{ include('bl_head/_form.html.twig') }}
+
+    <a href="{{ path('app_bl_head_index') }}">back to list</a>
+{% endblock %}

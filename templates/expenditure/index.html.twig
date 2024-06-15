@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BL{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between my-schedule mb-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 class="font-weight-bold">Gestion des Dépenses</h4>
+                        </div>
+                        <div class="create-workform">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                <div class="modal-product-search d-flex">
+                                    <form class="mr-3 position-relative">
+                                        <div class="form-group mb-0">
+                                            <input type="text" class="form-control" id="exampleInputText"  placeholder="Recherche">
+                                            <a class="search-link" href="#">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </form>
+                                    <a href="{{ path('app_expenditure_new') }}" class="btn btn-primary position-relative d-flex align-items-center justify-content-between">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Ajouter nouvelle Dépense
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <form class="row submitFilterForm" method="post">
+                                <div class="col-lg-6">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label font-weight-bold text-muted text-uppercase">Date Du :</label>
+                                            <input type="date" class="form-control" id="dateFromFilter" name="dateFromFilter" value="{% if app.request.request.get('dateFromFilter') %}{{ app.request.request.get('dateFromFilter') }}{% endif %}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Au :</label>
+                                            <input type="date" class="form-control" id="dateToFilter" name="dateToFilter" value="{% if app.request.request.get('dateToFilter') %}{{ app.request.request.get('dateToFilter') }}{% endif %}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
+                            <div class="flex align-items-start flex-column">
+                            </div>
+                            <div>
+                                <button class="btn btn-primary px-4 submitFilterButton" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Rechercher
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-block card-stretch">
+                                <div class="card-body p-0">
+                                    <div class="d-flex justify-content-between align-items-center p-3">
+                                        <h5 class="font-weight-bold">Liste des Dépenses</h5>
+                                        <a class="btn btn-secondary btn-sm" href="{{ path('app_expenditure_index',{'export':1,'dateFromFilter':app.request.request.get('dateFromFilter'),'dateToFilter':app.request.request.get('dateToFilter')}) }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                            </svg>
+                                            Exporter la liste
+                                        </a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table data-table mb-0">
+                                            <thead class="table-color-heading">
+                                            <tr class="text-light">
+                                                <th scope="col">
+                                                    <label class="text-muted m-0" >Réference</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0">Date</label>
+                                                </th>
+                                                <th scope="col" class="dates">
+                                                    <label class="text-muted mb-0" >Type de dépense</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Description</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Mode paiement</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Montant</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <span class="text-muted" >Action</span>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for dep in expenditures %}
+                                                <tr class="white-space-no-wrap">
+                                                    <td>
+                                                        {{ dep.ref }}
+                                                    </td>
+                                                    <td>{{ dep.date|date('d/m/Y') }}</td>
+                                                    <td>
+                                                        {{ expenditureType[dep.type] }}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ dep.description }}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ paymentType[dep.paymentMode] }}
+                                                    </td>
+
+                                                    <td class="text-right">
+                                                        {{ dep.price|number_format(2, ',',' ') }} DH
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-end align-items-center">
+                                                            <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier" href="{{ path('app_expenditure_edit',{'id':dep.id}) }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="text-secondary" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                                </svg>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascriptfooter %}
+    <script>
+        $(document).ready(function(){
+            $('.submitFilterButton').on('click',function(){
+                $('.submitFilterForm').submit();
+            });
+        });
+    </script>
+{% endblock  %}

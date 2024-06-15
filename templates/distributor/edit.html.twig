@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consultation/Modification fournisseur{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb p-0 mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_distributor_index') }}">Gestion des fournisseurs</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Consultation/Modification fournisseur</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a href="{{ path('app_distributor_index') }}" class="btn btn-primary btn-sm d-flex align-items-center justify-content-between">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ml-2">Retour</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3 d-flex justify-content-between">
+                    <h4 class="font-weight-bold0 d-flex align-items-center">Consultation/Modification fournisseur</h4>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_start(form,{'attr': {'class': 'row g-3 date-icon-set-modal','id': 'saveForm'}}) }}
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label font-weight-bold text-muted text-uppercase">Raison sociale :</label>
+                                        {{ form_widget(form.company,{'attr': {'class': 'form-control','placeholder':'Raison sociale'}}) }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label font-weight-bold text-muted text-uppercase">ICE :</label>
+                                        {{ form_widget(form.ice,{'attr': {'class': 'form-control','placeholder':'ICE'}}) }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="Text3" class="form-label font-weight-bold text-muted text-uppercase">Téléphone :</label>
+                                        {{ form_widget(form.phone,{'attr': {'class': 'form-control','placeholder':'Tél'}}) }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="Text4" class="form-label font-weight-bold text-muted text-uppercase">Email :</label>
+                                        {{ form_widget(form.email,{'attr': {'class': 'form-control','placeholder':'email Fournisseur'}}) }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="Text5" class="form-label font-weight-bold text-muted text-uppercase">Adresse :</label>
+                                        {{ form_widget(form.adresse,{'attr': {'class': 'form-control','placeholder':'adresse Fournisseur'}}) }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="inputcountry" class="form-label font-weight-bold text-muted text-uppercase">Ville :</label>
+                                        {{ form_widget(form.ville,{'attr': {'class': 'form-control','placeholder':'Ville Fournisseur'}}) }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="Text7" class="form-label font-weight-bold text-muted text-uppercase">Code postale :</label>
+                                        {{ form_widget(form.zipcode,{'attr': {'class': 'form-control','placeholder':'code postale'}}) }}
+                                    </div>
+
+                                    {{ form_end(form) }}
+
+                                    <div class="d-flex flex-wrap justify-content-between mt-3">
+                                        <button class="btn btn-danger font-weight-bold btn-sm delete-confirm" data-href="{{ path('app_distributor_delete', {'id': distributor.id,'_token': csrf_token('delete' ~ distributor.id)}) }}">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                Supprimer ce Fournisseur
+                                            </div>
+                                        </button>
+                                        <button type="button" class="btn btn-primary font-weight-bold btn-sm" id="save">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" fill="none"  width="20"   viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5" />
+                                            </svg>
+                                            Sauvegarder
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock%}
+
+{% block javascriptfooter %}
+    <script>
+        $('#save').on('click',function(){
+            $('#saveForm').submit();
+        });
+    </script>
+{% endblock  %}
+
+
+

@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rapport/Export des bons de livraison{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <form class="row submitFilterForm" method="post">
+                            <div class="col-lg-6">
+                                <div class="row g-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label font-weight-bold text-muted text-uppercase">Client :</label>
+                                        <select type="text" class="form-select form-control choicesjs" name="customerFilter" placeholder="Recherche clients" >
+                                               <option value=""></option>
+                                               {% for customer in customers %}
+                                                   <option value="{{ customer.id }}" {% if app.request.request.get('customerFilter') == customer.id %} selected {% endif %}>{{ customer.company }}</option>
+                                               {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label font-weight-bold text-muted text-uppercase">Date Du :</label>
+                                        <input type="date" class="form-control" id="dateFromFilter" name="dateFromFilter" value="{% if app.request.request.get('dateFromFilter') %}{{ app.request.request.get('dateFromFilter') }}{% endif %}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="row g-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Au :</label>
+                                        <input type="date" class="form-control" id="dateToFilter" name="dateToFilter" value="{% if app.request.request.get('dateToFilter') %}{{ app.request.request.get('dateToFilter') }}{% endif %}">
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
+                    <div class="flex align-items-start flex-column">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary px-4 submitFilterButton" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Rechercher
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">Liste bons livraison</h4>
+                    </div>
+                    <div class="header-action">
+                        <i data-toggle="collapse" data-target="#datatable-1" aria-expanded="false">
+
+                        </i>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="datatable-1" class="table data-table table-striped table-bordered" >
+                            <thead>
+                            <tr>
+                                <th>N° facture</th>
+                                <th>Client</th>
+                                <th>Date</th>
+                                <th>Mode paiement</th>
+                                <th>Statut</th>
+                                <th class="text-right">Total HT</th>
+                                <th class="text-right">Total TVA</th>
+                                <th class="text-right">Total TTC</th>
+                                <th scope="col" class="text-center">
+                                    <span class="text-muted"> </span>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                  {% for item in result %}
+                                      <tr>
+                                          <td>{{ item.InvoiceNumber }}</td>
+                                          <td>{{ item.customer.company }}</td>
+                                          <td>{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
+                                          <td>{{ item.paymentMode and item.paymentMode != "" ? paymentMode[item.paymentMode] : "" }} {{ item.paymentMode == 1 or item.paymentMode== 2  ? ": " ~ item.paymentReference : "" }}</td>
+                                          <td> <p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">
+                                                  <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                          <circle cx="12" cy="12" r="8" fill="#3cb72c"></circle></svg>
+                                                  </small>{{ item.status.label }}
+                                              </p>
+                                          </td>
+                                          <td class="text-right">{{ item.amoutTotalHt|number_format(2, ',', '') }} DH</td>
+                                          <td class="text-right">{{ item.amountTotalTaxe|number_format(2, ',', '') }}  DH</td>
+                                          <td class="text-right">{{ item.amountTotalTtc|number_format(2, ',', '') }}  DH</td>
+                                          <td>
+                                              <div class="d-flex justify-content-center align-items-center">
+                                                  <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Imprimer la facture" href="{{ path('app_sales_invoice',{'id':item.id}) }}">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" class="text-secondary" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                                      </svg>
+                                                  </a>
+                                              </div>
+                                          </td>
+                                      </tr>
+                                 {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
+                    <div class="flex align-items-start flex-column">
+                    </div>
+                    <div>
+                        <a class="btn btn-secondary px-4 submitFilterButton" type="button" href="{{ path('app_reporting_bl',{'export':1,'customerFilter':app.request.request.get('customerFilter'),'dateFromFilter':app.request.request.get('dateFromFilter'),'dateToFilter':app.request.request.get('dateToFilter')}) }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                            Exporter la liste bon livraison
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascriptfooter %}
+    <script>
+        $(document).ready(function(){
+            $('.submitFilterButton').on('click',function(){
+                $('.submitFilterForm').submit();
+            });
+        });
+
+    </script>
+{% endblock  %}
+

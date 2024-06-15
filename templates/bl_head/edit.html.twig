@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit BlHead{% endblock %}
+
+{% block body %}
+    <h1>Edit BlHead</h1>
+
+    {{ include('bl_head/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_bl_head_index') }}">back to list</a>
+
+    {{ include('bl_head/_delete_form.html.twig') }}
+{% endblock %}

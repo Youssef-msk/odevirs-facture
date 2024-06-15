@@ -1,0 +1,9 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    globals:
+        local_money_lower: '%local_money_lower%'
+        local_money_upper: '%local_money_upper%'
+        rate_list: '%tva_rate%'
+when@test:
+    twig:
+        strict_variables: true

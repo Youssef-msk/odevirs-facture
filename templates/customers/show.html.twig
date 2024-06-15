@@ -1,0 +1,222 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails client{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb p-0 mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_customers') }}">Gestion des clients</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Détails client</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a href="{{ path('app_customers') }}" class="btn btn-primary btn-sm d-flex align-items-center justify-content-between ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ml-2">Retour</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3 d-flex justify-content-between">
+                    <h4 class="font-weight-bold d-flex align-items-center">Détails client</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div>
+                                    <ul class="list-style-1 mb-0">
+                                        <li class="list-item d-flex justify-content-start align-items-center">
+                                            <div class="avatar">
+                                                <img class="avatar avatar-img avatar-60 rounded-circle" src="{{ asset('assets/images/crm/customers/avatar_default.png') }}" alt="01.jpg" />
+                                            </div>
+                                            <div class="list-style-detail ml-4 mr-2">
+                                                <h5 class="font-weight-bold">{{ customer.company }}</h5>
+                                                <p class="mb-0 mt-1 text-muted">{{ customer.ice }}</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-6 text-center mb-2">
+
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <button class="btn btn-block btn-sm btn-secondary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                            <span class="">Modifier ce client</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <table class="table table-borderless mb-0">
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">RAISON SOCIALE</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.company }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">ICE</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.ice }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">TÉLÉPHONE</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.phone }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">E-MAIL</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.email }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">ADRESSE</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.adresse }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">VILLE</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.ville }}</p>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="p-0">
+                                            <p class="mb-0 text-muted">CODE POSTALE</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 ">{{ customer.zipcode }}</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <ul class="nav tab-nav-pane nav-tabs pt-2 mb-0">
+                                <li class="pb-2 mb-0 nav-item"><a data-toggle="tab" class="font-weight-bold text-uppercase px-5 py-2 active" href="#invoice">Bons de livraison</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="invoice" class="tab-pane fade show active">
+                                    <div class="d-flex justify-content-between align-items-center p-3">
+                                        <h5>Liste des bons de livraison</h5>
+                                        <button class="btn btn-secondary btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                            </svg>
+                                            Exporter la liste des bons de livraison
+                                        </button>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table data-table mb-0">
+                                            <thead class="table-color-heading">
+                                            <tr class="text-light">
+                                                <th scope="col">
+                                                    <label class="text-muted m-0" >Réference</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0">Client</label>
+                                                </th>
+                                                <th scope="col" class="dates">
+                                                    <label class="text-muted mb-0" >Date</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Statut</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Total HT</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Total TTC</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <span class="text-muted" >Action</span>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for sale in salesCustomer %}
+                                                <tr class="white-space-no-wrap">
+                                                    <td>
+                                                        {{ sale.reference }}
+                                                    </td>
+                                                    <td>{{ sale.customer.company }}</td>
+                                                    <td>
+                                                        {{ sale.createdAt|date('Y-m-d H:i:s') }}
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">
+                                                            <small><svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24" fill="none">
+                                                                    <circle cx="12" cy="12" r="8" fill="#3cb72c"></circle></svg>
+                                                            </small>{{ sale.status.label }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ sale.amoutTotalHt }} DH
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ sale.amountTotalTtc }} DH
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="d-flex justify-content-end align-items-center">
+                                                            <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier" href="{{ path('app_sales_edit',{'id':sale.id}) }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="text-secondary" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                                </svg>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

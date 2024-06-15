@@ -1,0 +1,9 @@
+vich_uploader:
+    db_driver: orm
+    mappings:
+        products_images:
+            uri_prefix: '%env(CLIENTS_LOGO_DIR)%'
+            upload_destination: '%kernel.project_dir%/public%env(CLIENTS_LOGO_DIR)%'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+
+

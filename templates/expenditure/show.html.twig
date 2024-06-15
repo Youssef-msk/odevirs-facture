@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Expenditure{% endblock %}
+
+{% block body %}
+    <h1>Expenditure</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ expenditure.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ expenditure.date }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ expenditure.type }}</td>
+            </tr>
+            <tr>
+                <th>OtherType</th>
+                <td>{{ expenditure.otherType }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ expenditure.price }}</td>
+            </tr>
+            <tr>
+                <th>HasInvoice</th>
+                <td>{{ expenditure.hasInvoice ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>InvoiceNumber</th>
+                <td>{{ expenditure.invoiceNumber }}</td>
+            </tr>
+            <tr>
+                <th>PaymentMode</th>
+                <td>{{ expenditure.paymentMode }}</td>
+            </tr>
+            <tr>
+                <th>PaymentReference</th>
+                <td>{{ expenditure.paymentReference }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_expenditure_index') }}">back to list</a>
+
+    <a href="{{ path('app_expenditure_edit', {'id': expenditure.id}) }}">edit</a>
+
+    {{ include('expenditure/_delete_form.html.twig') }}
+{% endblock %}

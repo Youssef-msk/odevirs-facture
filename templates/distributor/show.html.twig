@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Distributor{% endblock %}
+
+{% block body %}
+    <h1>Distributor</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ distributor.id }}</td>
+            </tr>
+            <tr>
+                <th>Company</th>
+                <td>{{ distributor.company }}</td>
+            </tr>
+            <tr>
+                <th>Ice</th>
+                <td>{{ distributor.ice }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ distributor.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ distributor.phone }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ distributor.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td>{{ distributor.ville }}</td>
+            </tr>
+            <tr>
+                <th>Zipcode</th>
+                <td>{{ distributor.zipcode }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_distributor_index') }}">Retour</a>
+
+    <a href="{{ path('app_distributor_edit', {'id': distributor.id}) }}">edit</a>
+
+    {{ include('distributor/_delete_form.html.twig') }}
+{% endblock %}

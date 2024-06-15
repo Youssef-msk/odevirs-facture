@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tarif produits{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between my-schedule mb-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 class="font-weight-bold">Tarifs produits</h4>
+                        </div>
+                        <div class="create-workform">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                <div class="modal-product-search d-flex">
+                                    <form class="mr-3 position-relative">
+                                        <div class="form-group mb-0">
+                                            <input type="text" class="searchProducts" placeholder="Rechercher un produit" >
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-block card-stretch">
+                                <div class="card-body p-0">
+                                    <div class="d-flex justify-content-between align-items-center p-3">
+                                        <h5 class="font-weight-bold">Liste des tarifs produits | Total de {{ products|length }} Produits</h5>
+                                        <a class="btn btn-secondary btn-sm" href="{{ path('app_products_reporting') }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                            </svg>
+                                            Exporter la listes produits tarifs
+                                        </a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table data-table mb-0">
+                                            <thead class="table-color-heading">
+                                            <tr class="text-light">
+                                                <th scope="col">
+                                                    <label class="text-muted m-0" >Produit</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Référence</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Marque</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Quantity</label>
+                                                </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0" >Prix TTC</label>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for product in products %}
+                                                <tr class="white-space-no-wrap">
+                                                    <td class="">
+                                                        <div class="active-project-1 d-flex align-items-center mt-0 ">
+                                                            <div class="h-avatar is-medium">
+                                                                <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('data/images/products/default.png') }}';"  alt="{{ product.name }}" src="{{ vich_uploader_asset(product, 'imageFile') }}">
+                                                            </div>
+                                                            <div class="data-content">
+                                                                <div>
+                                                                    <span class="font-weight-bold">{{ product.nameCommerciale }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {{ product.ref }}
+                                                    </td>
+                                                    <td>
+                                                        {{ product.brand }}
+                                                    </td>
+                                                    <td>
+                                                        {{ product.quantity }}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        {{ product.price|number_format(2, ',', ' ') }} {{ local_money_upper }}
+                                                    </td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="10">Aucun enregistrement trouvé</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascriptfooter %}
+    <script>
+        $(document).ready(function(){
+            var searchProducts = $('.searchProducts').magicSuggest({
+                data: '{{ path('app_products_search') }}',
+                valueField: 'id',
+                displayField: 'name',
+                allowFreeEntries: false,
+                maxSelection: 1,
+                renderer: function(data){
+                    return '<div class="active-project-1 d-flex align-items-center mt-0"><div class="h-avatar is-medium">' +
+                        '<img class="avatar rounded" alt="DESIGNATION" src="/data/images/products/' + data.picture + '" />' +
+                        '</div><div class="data-content"><div><span class="font-weight-bold">' + data.name +
+                        '</span></div><p class="m-0 mt-1">REF:' + data.ref +
+                        '</p></div></div>';
+                }
+            });
+
+            $(searchProducts).on('selectionchange', function(event, selection) {
+                var selectedValue = this.getValue();
+                if(selectedValue.length > 0){
+                    var selectedProduct = selectedValue[0];
+                    var redirectPath = "{{ path('app_products_edit', {'id': "productId"}) }}";
+
+                    window.location.href = redirectPath.replace("productId",selectedProduct);
+                }
+            });
+        });
+
+    </script>
+{% endblock  %}
+

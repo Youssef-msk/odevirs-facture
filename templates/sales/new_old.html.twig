@@ -1,0 +1,688 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout nouvelle vente{% endblock %}
+
+{% block body %}
+    {{ form_start(form,{'attr': {'class': 'saveForm','id': 'saveForm'}}) }}
+    <div class="content-page">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb p-0 mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_sales_index') }}">Ventes</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Ajout nouvelle vente</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="font-weight-bold">Nouvelle vente</h4>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item p-3">
+                                <h5 class="font-weight-bold pb-2">Détails vente</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Référence :
+                                            </td>
+                                            <td>
+                                                {{ form_widget(form.reference,{'attr': {'class': 'form-control','readonly':'readonly'}}) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Facture :
+                                            </td>
+                                            <td class="text-primary">
+                                                -
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Bon de commande :
+                                            </td>
+                                            <td class="text-primary">
+                                                {{ form_widget(form.bonCommande,{'attr': {'class': 'form-select form-control'}}) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Mode paiement:
+                                            </td>
+                                            <td>
+                                                {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap hidden" id="paymentReference">
+                                            <td class="text-muted pl-0">
+                                                N° (chèque/effet):
+                                            </td>
+                                            <td>
+                                                {{ form_widget(form.paymentReference,{'attr': {'class': 'form-select form-control'}}) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Statut
+                                            </td>
+                                            <td>
+                                                {{ form_widget(form.status,{'attr': {'class': 'form-select form-control'}}) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Date :
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="Text5" placeholder="DD MM YYYY" readonly="readonly" value="{{  currentDate }}">
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Commentaire :
+                                            </td>
+                                            <td>
+                                                {{ form_widget(form.comment,{'attr': {'class': 'form-control','placeholder':'Commentaire ...'}}) }}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </li>
+                            <li class="list-group-item p-3">
+                                <h5 class="font-weight-bold pb-2">Détails client</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Raison sociale :
+                                            </td>
+                                            <td>
+                                                {{ form_widget(form.customer,{'attr': {'class': 'form-select form-control choicesjs'}}) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                ICE :
+                                            </td>
+                                            <td>
+                                                <input type="text"  class="form-control" id="iceCustomer"  readonly="readonly">
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Contact :
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="contactCustomer" readonly="readonly">
+                                            </td>
+                                        </tr>
+                                        <tr class="white-space-no-wrap">
+                                            <td class="text-muted pl-0">
+                                                Address :
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="addresseCustomer" readonly="readonly">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                        {{ form_widget(form._token) }}
+
+
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="d-flex justify-content-between align-items-center p-3">
+                                <h5 class="font-weight-bold">Liste des produits</h5>
+                                <button class="btn btn-secondary btn-sm addNewProductButton" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke="currentColor" class="mr-1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    Ajouter un produit
+                                </button>
+                            </li>
+                            <li class="list-group-item p-0">
+                                <div class="table-responsive">
+                                    <table class="table data-table-without-options mb-0" id="salesProducts">
+                                        <thead class="table-color-heading">
+                                        <tr class="text-light">
+                                            <th scope="col">
+                                                <label class="text-muted m-0" >Produit</label>
+                                            </th>
+                                            <th scope="col">
+                                                <label class="text-muted mb-0" >Quantity</label>
+                                            </th>
+                                            <th scope="col" class="text-left">
+                                                <label class="text-muted mb-0" >PU HT</label>
+                                            </th>
+                                            <th scope="col" class="text-left">
+                                                <label class="text-muted mb-0" >Taxe</label>
+                                            </th>
+                                            <th scope="col" class="text-left">
+                                                <label class="text-muted mb-0" >PU TTC</label>
+                                            </th>
+                                            <th scope="col" class="text-left">
+                                                <label class="text-muted mb-0" >PT TTC</label>
+                                            </th>
+                                            <th scope="col" class="text-right">
+                                                <span class="text-muted" >Action</span>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="salesProductsBody">
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-end mb-2">
+                                    TOTAL HT: <p class="ml-2 mb-0" id="sumPriceTotalHtLabel">00,00</p>
+                                    <input type="hidden" name="sumPriceTotalHtLabel" class="sumPriceTotalHtLabel" value="0">
+                                </div>
+                                <div class="d-flex justify-content-end mb-2">
+                                    TVA : <p class="ml-2 mb-0" id="sumTotalTaxeLabel">00,00</p>
+                                    <input type="hidden" name="sumTotalTaxeLabel" class="sumTotalTaxeLabel" value="0">
+
+                                </div>
+                                <div class="d-flex justify-content-end mb-2">
+                                    Montant NET TTC (MAD) : <p class="ml-2 mb-0 font-weight-bold" id="sumPriceTotalTtcLabel">00,00</p>
+                                    <input type="hidden" name="sumPriceTotalTtcLabel" class="sumPriceTotalTtcLabel" value="0">
+                                </div>
+                            </li>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
+                                <div class="flex align-items-start flex-column">
+                                    <h6>Notes</h6>
+                                    <p class="mb-0 my-2" style="color: red">Une fois que vous avez apporté les modifications nécessaires aux lignes de l'article,<br> n'oubliez pas de cliquer sur le bouton "Enregistrer" pour les appliquer.</p>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary px-4" type="submit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                        </svg>
+                                        Sauvegarder
+                                    </button>
+                                </div>
+                            </div>
+                        </ul>
+
+
+
+                        <div style="display: none">
+
+                            <input type="text" name="newProductRowData[idSelectedProduct]" id="idSelectedProduct" class="idSelectedProduct" value="0">
+                            <input type="text" id="isSelectedNewProduct" class="isSelectedProduct" value="0">
+
+                            <input type="number" name="newProductRowData[newProductQuantity]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductQuantity" placeholder="Quantity">
+
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductPriceHt]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductPriceHt" placeholder="Prix HT">
+                            <input type="text" name="newProductRowData[newProductPriceTotalHt]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductPriceTotalHt" placeholder="Prix HT">
+
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductTaxe]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductTaxe" placeholder="Taxe">
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductRateType]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductRateType" placeholder="Taxe Type">
+
+                            <input type="text" name="newProductRowData[newProductPriceTtc]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductPriceTtc" placeholder="Taxe">
+
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductPriceTotalTtc]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductPriceTotalTtc" placeholder="Prix Total TTC">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{ form_end(form, {'render_rest': false}) }}
+
+{% endblock %}
+
+{% block javascriptfooter %}
+    <script>
+        $(document).ready(function(){
+
+            $('#sales_paymentMode').change(function () {
+                if ($(this).val() === '1' || $(this).val() === '2') {
+                    $('#paymentReference').removeClass('hidden');
+                    $('#sales_paymentReference').val('');
+                } else {
+                    $('#paymentReference').addClass('hidden');
+                    $('#sales_paymentReference').val('');
+                }
+            });
+            $('#sales_paymentMode').change();
+
+            $('.triggerCalculateNewLigne').keypress(function(event) {
+                var charCode = event.which;
+                var inputValue = String.fromCharCode(charCode);
+
+                // Allow digits (0-9), decimal point (.), and minus sign (-)
+                if (!/[\d,-]/.test(inputValue)) {
+                    event.preventDefault(); // Prevent the key press from being entered into the input field
+                }
+
+                // Ensure only one decimal point is entered
+                if (inputValue === ',' && this.value.includes(',')) {
+                    event.preventDefault(); // Prevent the key press from being entered into the input field
+                }
+            });
+
+            $('.data-table-without-options').DataTable({
+                paging: false,
+                ordering: false,
+                info: false,
+                searching: false
+            });
+
+            $('.remove-product-btn').on('click', function(event, selection) {
+                $(this).closest('tr').remove();
+            });
+
+           /* var searchProducts = $('.swal-content__input').magicSuggest({
+                data: '{{ path('app_products_search') }}',
+                valueField: 'id',
+                displayField: 'name',
+                allowFreeEntries: false,
+                maxSelection: 1,
+                renderer: function(data){
+                    return '<div class="active-project-1 d-flex align-items-center mt-0"><div class="h-avatar is-medium">' +
+                        '<img class="avatar rounded" alt="DESIGNATION" src="/data/images/products/' + data.picture + '" />' +
+                        '</div><div class="data-content"><div><span class="font-weight-bold">' + data.name +
+                        '</span></div><p class="m-0 mt-1">REF:' + data.ref +
+                        '</p></div></div>';
+                }
+            });*/
+
+
+
+            /*$(searchProducts).on('selectionchange', function(event, selection) {
+                var selectedValue = this.getValue();
+
+                if(selectedValue){
+                    var selectedProduct = selectedValue[0];
+                    var urlInfos = "{{ path('app_products_infos',{'id': 'selectedProduct'}) }}";
+                    $.ajax({
+                        type: "GET",
+                        url : urlInfos.replace("selectedProduct", selectedProduct),
+                        async: false,
+                        success : function(response) {
+                            console.log(response)
+                            if(response && response !== '' && response != "product not found"){
+                                //prix ht
+                                $("#newProductPriceHt").val(response.priceHt.toString().replace(".",","));
+                                $("#newProductPriceTotalHt").val((response.priceHt * 1));
+                                //prix ttc
+                                $("#newProductPriceTtc").val(response.price.toString().replace(".",","));
+                                //valeur tva
+                                $("#newProductTaxe").val(response.rate ? response.rate.toString().replace(".",",") : "");
+                                $("#newProductRateType").val(response.rateType ? response.rateType : "");
+                                //
+                                $("#isSelectedProduct").val(1);
+                                //quantity
+                                $("#newProductQuantity").val(1);
+                                $('#newProductQuantity').attr('min', 0); // Set the minimum value
+                                $('#newProductQuantity').attr('max', response.quantity); // Set the maximum value
+                                //id produit
+                                $("#idSelectedProduct").val(selectedProduct);
+                                //trigger calculate
+
+                                calculatePtNewProduct();
+                            }else{
+                                //prix ht
+                                $("#newProductPriceHt").val(0);
+                                $("#newProductPriceTotalHt").val(0);
+                                //prix ttc
+                                $("#newProductPriceTtc").val(0);
+                                //valeur tva
+                                $("#newProductTaxe").val(0);
+                                $("#newProductRateType").val("default_taxe");
+                                //
+                                $("#isSelectedProduct").val(0);
+                                //quantity
+                                $("#newProductQuantity").val(0);
+                                //id produit
+                                $("#idSelectedProduct").val(0);
+                            }
+                        },
+                        error: function() {
+                            alert('Error occured');
+                        }
+                    });
+                }
+            });*/
+
+            $('.triggerCalculateNewLigne').change(function() {
+                calculatePtNewProduct();
+            });
+
+            $('.triggerCalculateNewLigne').on('keyup', function(event, selection) {
+                calculatePtNewProduct();
+            });
+
+
+            $('#sales_customer').change();
+            $('#sales_customer').change(function() {
+                var customer = $(this).val();
+                var urlInfos = "{{ path('app_customers_infos',{'id': 'customerId'}) }}";
+                $.ajax({
+                    type:"GET",
+                    url : urlInfos.replace("customerId", customer),
+                    async: false,
+                    success : function(response) {
+                        $("#iceCustomer").val(response.ice);
+                        $("#contactCustomer").val(response.phone+" - "+response.email);
+                        $("#addresseCustomer").val(response.address+" - "+response.zipcode);
+                    },
+                    error: function() {
+                        alert('Error occured');
+                    }
+                });
+            });
+        });
+
+        function calculatePtNewProduct(){
+            var priceHt = $("#newProductPriceHt").val();
+            var rate = $("#newProductTaxe").val();
+            var quantity = $("#newProductQuantity").val();
+            var priceTtc = $("#newProductPriceTtc").val();
+
+            console.log(priceHt , quantity,rate)
+            $("#newProductPriceTotalHt").val((parseFloat(priceHt.replace(/,/g, ".")) * parseInt(quantity)).toFixed(2).toString().replace(".",","));
+            $("#newProductPriceTotalTtc").val((parseFloat(priceTtc.replace(/,/g, ".")) * parseInt(quantity)).toFixed(2).toString().replace(".",","));
+            $("#newProductTaxe").val((( (parseFloat(priceTtc.replace(/,/g, ".")) / 1.2) * 0.2 ) * parseInt(quantity)).toFixed(2).toString().replace(".",","));
+
+            calculateSumFooterElements();
+
+        }
+
+
+        $('#newProductPriceTtc').on('change',function(){
+            calculatePricesFromTaxe()
+        });
+
+        $('.addNewProductButton').on('click',function(){
+            swal({
+                title: "Rechercher un article",
+                content: "input",
+                className: 'custom-class',
+                buttons: {
+                    cancel: 'Cancel',
+                    confirm: 'OK'
+                }
+            })
+            .then(message => {
+                var formData = $('input[name^="newProductRowData"]').serializeArray();
+                console.log(formData)
+
+                var newProductDataRow = {};
+                formData.forEach(function(item) {
+                    var name = item.name.replace('newProductRowData[', '').replace(']', '');
+                    newProductDataRow[name] = item.value;
+                });
+                console.log(newProductDataRow , newProductDataRow.newProductPriceTtc !== "");
+                if(newProductDataRow && newProductDataRow.newProductPriceTtc !== "" ){
+                    console.log("OK")
+                    var url = "{{ path('app_products_view_new_row') }}";
+                    $.ajax({
+                        type: "GET",
+                        url : url,
+                        data: newProductDataRow,
+                        async: false,
+                        success : function(response) {
+                            //$('#salesProducts tr.zoneAddNewProduct').before(response);
+                            var newRow = $(response);
+                            $('#salesProductsBody').append(newRow);
+                        },
+                        error: function() {
+                            alert('Error occured');
+                        }
+                    });
+                }
+
+
+                calculateSumFooterElements();
+            });
+
+            var searchProducts = $('.swal-content__input').magicSuggest({
+                data: '{{ path('app_products_search') }}',
+                valueField: 'id',
+                displayField: 'name',
+                allowFreeEntries: false,
+                maxSelection: 1,
+                renderer: function(data){
+                    return '<div class="active-project-1 d-flex align-items-center mt-0"><div class="h-avatar is-medium">' +
+                        '<img class="avatar rounded" alt="DESIGNATION" src="/data/images/products/' + data.picture + '" />' +
+                        '</div><div class="data-content"><div><span class="font-weight-bold">' + data.name +
+                        '</span></div><p class="m-0 mt-1">REF:' + data.ref +
+                        '</p></div></div>';
+                }
+            });
+
+            $(searchProducts).on('selectionchange', function(event, selection) {
+                var selectedValue = this.getValue();
+                if(selectedValue){
+                    var selectedProduct = selectedValue[0];
+                    var urlInfos = "{{ path('app_products_infos',{'id': 'selectedProduct'}) }}";
+                    $.ajax({
+                        type: "GET",
+                        url : urlInfos.replace("selectedProduct", selectedProduct),
+                        async: false,
+                        success : function(response) {
+                            console.log(response)
+                            if(response && response != "product not found"){
+                                //prix ht
+                                $("#newProductPriceHt").val(response.priceHt.toString().replace(".",","));
+                                $("#newProductPriceTotalHt").val((response.priceHt * 1));
+                                //prix ttc
+                                $("#newProductPriceTtc").val(response.price.toString().replace(".",","));
+                                //valeur tva
+                                $("#newProductTaxe").val(response.rate ? response.rate.toString().replace(".",",") : "");
+                                $("#newProductRateType").val(response.rateType ? response.rateType : "");
+                                //
+                                $("#isSelectedProduct").val(1);
+                                //quantity
+                                $("#newProductQuantity").val(1);
+                                $('#newProductQuantity').attr('min', 0); // Set the minimum value
+                                $('#newProductQuantity').attr('max', response.quantity); // Set the maximum value
+                                //id produit
+                                $("#idSelectedProduct").val(selectedProduct);
+                                //trigger calculate
+
+                                calculatePtNewProduct();
+                            }else{
+                                //prix ht
+                                $("#newProductPriceHt").val(0);
+                                $("#newProductPriceTotalHt").val(0);
+                                //prix ttc
+                                $("#newProductPriceTtc").val(0);
+                                //valeur tva
+                                $("#newProductTaxe").val(0);
+                                $("#newProductRateType").val("default_taxe");
+                                //
+                                $("#isSelectedProduct").val(0);
+                                //quantity
+                                $("#newProductQuantity").val(0);
+                                //id produit
+                                $("#idSelectedProduct").val(0);
+                            }
+
+                            $(".dataTables_empty").remove();
+                        },
+                        error: function() {
+                            alert('Error occured');
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#newProductPriceTtc').on('keyup',function(){
+            calculatePricesFromTaxe()
+        });
+
+        function calculatePricesFromTaxe(){
+            var rateValue =  $('#newProductRateType').val();
+
+            if(rateValue == "default_taxe"){
+                var newPriceTTc =  (parseFloat($('#newProductPriceTtc').val().replace(/,/g, ".")));
+                var newRate  =  (newPriceTTc / 1.2) * 0.2;
+                var newPriceHt = (newPriceTTc - newRate);
+                $('#newProductPriceHt').val(newPriceHt.toFixed(2).toString().replace(".",","));
+            }else {
+                var priceTTC = (parseFloat($('#newProductPriceTtc').val().replace(/,/g, "."))); // Price including tax
+                var vatRate = parseInt(rateValue) / 100; // 20% VAT rate
+                $('#products_rate').val((priceTTC - calculatePriceExcludingTax(priceTTC, vatRate)).toFixed(2));
+                $('#products_priceHt').val(calculatePriceExcludingTax(priceTTC, vatRate));
+            }
+            calculateSumFooterElements();
+
+        }
+
+
+        function calculatePriceExcludingTax(priceTTC, vatRate) {
+            var priceHT = priceTTC / (1 + vatRate);
+            return priceHT.toFixed(2); // Round the result to 2 decimal places
+        }
+
+        function calculateQuantityTrigger(productId){
+            var elementnewProductPriceHt = "dataSalesProducts["+productId+"][priceHt]";
+            var $newProductPriceHt = $("[name='" + elementnewProductPriceHt + "']");
+            var priceHt = $newProductPriceHt.val();
+
+            var elementnewProductTaxe = "dataSalesProducts["+productId+"][taxe]";
+            var $newProductTaxe = $("[name='" + elementnewProductTaxe + "']");
+            var rate = $newProductTaxe.val();
+
+            var elementnewProductQuantity = "dataSalesProducts["+productId+"][quantity]";
+            var $newProductQuantity = $("[name='" + elementnewProductQuantity + "']");
+            var quantity = $newProductQuantity.val();
+
+            var elementnewProductPriceTtc = "dataSalesProducts["+productId+"][priceTtc]";
+            var $newProductPriceTtc = $("[name='" + elementnewProductPriceTtc + "']");
+            var priceTtc = $newProductPriceTtc.val();
+
+            var elementnewProductPriceTotalHt = "dataSalesProducts["+productId+"][priceTotalHt]";
+            var $newProductPriceTotalHt = $("[name='" + elementnewProductPriceTotalHt + "']");
+            $newProductPriceTotalHt.val((parseFloat(priceHt.replace(/,/g, ".")) * parseInt(quantity)).toFixed(2).toString().replace(".",","));
+
+
+            var elementnewProductPriceTotalTtc = "dataSalesProducts["+productId+"][priceTotalTtc]";
+            var $newProductPriceTotalTtc = $("[name='" + elementnewProductPriceTotalTtc + "']");
+            $newProductPriceTotalTtc.val((parseFloat(priceTtc.replace(/,/g, ".")) * parseInt(quantity)).toFixed(2).toString().replace(".",","));
+
+
+            var elementnewProductTaxe = "dataSalesProducts["+productId+"][taxe]";
+            var $newProductTaxe = $("[name='" + elementnewProductTaxe + "']");
+            $newProductTaxe.val((( (parseFloat(priceTtc.replace(/,/g, ".")) / 1.2) * 0.2 ) * parseInt(quantity)).toFixed(2).toString().replace(".",","));
+
+            var elementnewProducttaxeType = "dataSalesProducts["+productId+"][taxeType]";
+            var $newProductTaxeType = $("[name='" + elementnewProducttaxeType + "']");
+            var rateValue =  $newProductTaxeType.val();
+
+            if(rateValue == "default_taxe"){
+                var newPriceTTc =  (parseFloat($newProductPriceTtc.val().replace(/,/g, ".")));
+                var newRate  =  (newPriceTTc / 1.2) * 0.2;
+                var newPriceHt = (newPriceTTc - newRate);
+
+                var elementnewpriceHt = "dataSalesProducts["+productId+"][priceHt]";
+                var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
+                $newProductelementnewpriceHt.val(newPriceHt.toFixed(2).toString().replace(".",","));
+            }
+
+            calculateSumFooterElements();
+
+        }
+
+        function deleteProductRow(productId){
+            var elementProductRow = "productRow"+productId+"";
+            var $productRow = $("." + elementProductRow + "");
+            $productRow.remove();
+
+            calculateSumFooterElements();
+
+        }
+
+
+
+        function calculateSumFooterElements() {
+            var sumTotalHt = 0;
+            $('.sumPriceTotalHt').each(function() {
+                var value = parseFloat($(this).val().replace(/,/g, "."));
+                if (!isNaN(value)) {
+                    sumTotalHt += value;
+                }
+            });
+
+            if (sumTotalHt > 0){
+                $("#sumPriceTotalHtLabel").html(sumTotalHt.toFixed(2).toString().replace(".",","));
+                $(".sumPriceTotalHtLabel").val(sumTotalHt.toFixed(2).toString().replace(".",","));
+            }else {
+                $("#sumPriceTotalHtLabel").html("00,00");
+                $(".sumPriceTotalHtLabel").val("00,00");
+            }
+
+
+            var sumTotalTaxe = 0;
+            $('.sumTotalTaxe').each(function() {
+                var value = parseFloat($(this).val().replace(/,/g, "."));
+                if (!isNaN(value)) {
+                    sumTotalTaxe += value;
+                }
+            });
+
+            if (sumTotalTaxe > 0){
+                $("#sumTotalTaxeLabel").html(sumTotalTaxe.toFixed(2).toString().replace(".",","));
+                $(".sumTotalTaxeLabel").val(sumTotalTaxe.toFixed(2).toString().replace(".",","));
+                console.log(sumTotalTaxe);
+            }else {
+                $("#sumTotalTaxeLabel").html("00,00");
+                $(".sumTotalTaxeLabel").val("00,00");
+            }
+
+
+            var sumPriceTotalTtc = 0;
+            $('.sumPriceTotalTtc').each(function() {
+                var value = parseFloat($(this).val().replace(/,/g, "."));
+                if (!isNaN(value)) {
+                    sumPriceTotalTtc += value;
+                }
+            });
+
+            if (sumPriceTotalTtc > 0){
+                $("#sumPriceTotalTtcLabel").html(sumPriceTotalTtc.toFixed(2).toString().replace(".",","));
+                $(".sumPriceTotalTtcLabel").val(sumPriceTotalTtc.toFixed(2).toString().replace(".",","));
+                console.log(sumPriceTotalTtc);
+            }else {
+                $("#sumPriceTotalTtcLabel").html("00,00");
+                $(".sumPriceTotalTtcLabel").val("00,00");
+            }
+
+        }
+
+    </script>
+{% endblock  %}

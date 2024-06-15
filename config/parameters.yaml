@@ -1,0 +1,12 @@
+parameters:
+  app.secret: 4542316722d3533a15550074c9d4af77
+  kernel.root_dir: '%kernel.project_dir%'
+  local_money_upper: 'DH'
+  local_money_lower: 'dh'
+  tva_rate:
+    TVA_30: {label: "TVA 30%",value: 30}
+    TVA_20: {label: "TVA 20%",value: 20}
+    TVA_15: {label: "TVA 15%",value: 15}
+    TVA_10: {label: "TVA 10%",value: 10}
+    TVA_5:  {label: "TVA 5%",value: 5}
+    TVA_default: {label: "Default Taxe",value: "default_taxe"}

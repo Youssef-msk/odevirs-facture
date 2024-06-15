@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout/Consultation Dépenses{% endblock %}
+
+{% block body %}
+    <div class="content-page">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb p-0 mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_expenditure_index') }}">Dépenses</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Ajout/Consultation Dépense</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <a href="{{ path('app_expenditure_index') }}" class="btn btn-primary btn-sm d-flex align-items-center justify-content-between">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ml-2">Retour</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3 d-flex justify-content-between">
+                    <h4 class="font-weight-bold0 d-flex align-items-center">Ajout/Consultation Dépense</h4>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_start(form,{'attr': {'class': 'saveForm','id': 'saveForm'}}) }}
+                                        <div class="row g-3 date-icon-set-modal">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Text1" class="form-label font-weight-bold text-muted text-uppercase">réference :</label>
+                                                {% if app.current_route == "app_expenditure_new" %}
+                                                    <input type="text" class="form-control" placeholder="Référence" readonly="readonly" value="Généré automatiquement après l’ajout">
+                                                {% else %}
+                                                    {{ form_widget(form.ref,{'attr': {'class': 'form-control','placeholder':'Référence','readonly':'readonly'}}) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3 position-relative">
+                                                <div class="form-group">
+                                                    <label for="Text2" class="form-label font-weight-bold text-muted text-uppercase">Date: </label>
+                                                    {% if app.current_route == "app_expenditure_new" %}
+                                                        {{ form_widget(form.date,{'attr': {'class': 'form-control','placeholder':'Date','autocomplete':'off'},'type':'date','value':"now"|date("Y-m-d")}) }}
+                                                    {% else %}
+                                                        {{ form_widget(form.date,{'attr': {'class': 'form-control','placeholder':'Date','autocomplete':'off'},'type':'date'}) }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Text3" class="form-label font-weight-bold text-muted text-uppercase">Type Dépense :</label>
+                                                {{ form_widget(form.type,{'attr': {'class': 'form-select form-control choicesjsType','autocomplete':'off'}}) }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Text3" class="form-label font-weight-bold text-muted text-uppercase">Description DÉPENSE:</label>
+                                                {{ form_widget(form.description,{'attr': {'class': 'form-control','placeholder':'Description'}}) }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Text3" class="form-label font-weight-bold text-muted text-uppercase">Montant (DH) :</label>
+                                                {{ form_widget(form.price,{'attr': {'class': 'form-control','step':'0.01','placeholder':'Montant'},'type':'number'}) }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Text4" class="form-label font-weight-bold text-muted text-uppercase">N° Facture externe:</label>
+                                                {{ form_widget(form.invoiceReference,{'attr': {'class': 'form-control','placeholder':'N° Facture externe'}}) }}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label  class="form-label font-weight-bold text-muted text-uppercase">Mode paiement :</label>
+                                                {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
+                                            </div>
+                                            <div class="col-md-6 mb-3 hidden" id="paymentReference">
+                                                <label  class="form-label font-weight-bold text-muted text-uppercase">N° (chèque/effet) :</label>
+                                                {{ form_widget(form.paymentReference,{'attr': {'class': 'form-select form-control'}}) }}
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <label for="Text9" class="form-label font-weight-bold text-muted text-uppercase">COMMENTAIRE :</label>
+                                                {{ form_widget(form.commentaire,{'attr': {'class': 'form-select form-control','rows':'2'}}) }}
+                                            </div>
+                                        </div>
+                                        {{ form_widget(form._token) }}
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <button class="btn btn-primary px-4" type="submit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
+                                                </svg>
+                                                Sauvegarder
+                                            </button>
+                                        </div>
+                                    {{ form_end(form, {'render_rest': false}) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascriptfooter %}
+<script>
+    $(document).ready(function(){
+        $(".choicesjsType").select2({
+            placeholder: 'Type DÉPENSE',
+            allowClear: true,
+            //templateResult: formatState
+        });
+    });
+
+    $('#expenditure_paymentMode').change(function () {
+        if ($(this).val() === '1' || $(this).val() === '2') {
+            $('#paymentReference').removeClass('hidden');
+        } else {
+            $('#paymentReference').addClass('hidden');
+            $('#expenditure_paymentReference').val('');
+        }
+    });
+
+    $('#expenditure_paymentMode').change();
+
+    function formatState (state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var baseUrl = "/assets/images/crm/expenditure/type";
+        var $state = $(
+            '<span><img src="' + baseUrl + '/default.jpg" class="img-flag" /> ' + state.text + '</span>'
+        );
+        return $state;
+    };
+</script>
+{% endblock %}

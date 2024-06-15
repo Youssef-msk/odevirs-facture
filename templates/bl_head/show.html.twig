@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BlHead{% endblock %}
+
+{% block body %}
+    <h1>BlHead</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ bl_head.id }}</td>
+            </tr>
+            <tr>
+                <th>Reference</th>
+                <td>{{ bl_head.reference }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ bl_head.date ? bl_head.date|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ bl_head.status }}</td>
+            </tr>
+            <tr>
+                <th>Commentaire</th>
+                <td>{{ bl_head.commentaire }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_bl_head_index') }}">back to list</a>
+
+    <a href="{{ path('app_bl_head_edit', {'id': bl_head.id}) }}">edit</a>
+
+    {{ include('bl_head/_delete_form.html.twig') }}
+{% endblock %}
