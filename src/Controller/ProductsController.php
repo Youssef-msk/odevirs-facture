@@ -64,6 +64,7 @@ class ProductsController extends AbstractController
         return $this->renderForm('products/edit.html.twig', [
             'product' => $product,
             'form' => $form,
+            "totalSales" => 0
         ]);
     }
 
