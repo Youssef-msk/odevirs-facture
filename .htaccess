@@ -4,33 +4,3 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
-
-
-
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /public/
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php [QSA,L]
-</IfModule>
-
-RewriteEngine on
-
-RewriteBase /
-
-RewriteRule ^css/(.*) web/css/$1
-
-RewriteRule ^images/(.*) web/images/$1
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ app.php [QSA,L]
-
-
-RewriteEngine on
-RewriteCond %{HTTP_HOST} ^(www.)?odevirs-facture.online$
-RewriteCond %{REQUEST_URI} !^/odevirs/
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /odevirs/public/$1
-RewriteCond %{HTTP_HOST} ^(www.)?odevirs-facture.online$
-RewriteRule ^(/)?$ odevirs/public/index.php [L]

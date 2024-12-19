@@ -53,6 +53,7 @@ class ExpenditureType extends AbstractType
                 'choices' => [
                     'Espèce'=> '3',
                     'Chèque'=> '1',
+                    'Virement'=> '5',
                     'Effet' => '2',
                     'Autre' => '4',
                 ],

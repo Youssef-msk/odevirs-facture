@@ -21,7 +21,7 @@ class EstimateProducts
 
     #[ORM\ManyToOne(inversedBy: 'EstimateProducts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Sales $sale = null;
+    private ?Estimate $sale = null;
 
     #[ORM\Column]
     private ?int $quantity = null;
@@ -183,8 +183,6 @@ class EstimateProducts
     {
         $this->taxeType = $taxeType;
     }
-
-
 
 
 }
