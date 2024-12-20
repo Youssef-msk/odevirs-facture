@@ -116,7 +116,7 @@ class SalesController extends AbstractController
         $form = $this->createForm(SalesType::class, $sale,["edit" => true]);
         $form->handleRequest($request);
         $data = $request->request->all();
-dump($sale->getSalesProducts());
+dump($sale->getSalesProducts()->getValues());
         $productListToAdd = isset($data["dataSalesProducts"]) ? $data["dataSalesProducts"] : [];
 
         if ($form->isSubmitted() && $form->isValid()) {
