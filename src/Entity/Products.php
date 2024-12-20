@@ -32,7 +32,7 @@ class Products
     #[Assert\NotBlank]
     private ?string $nameCommerciale = null;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\ManyToOne(inversedBy: 'products', fetch: 'EAGER')]
     private ?Distributor $distributor = null;
 
     #[ORM\Column]

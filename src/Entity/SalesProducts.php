@@ -19,7 +19,7 @@ class SalesProducts
     #[ORM\ManyToOne(inversedBy: 'salesProducts', fetch: 'EAGER')]
     private ?Products $product = null;
 
-    #[ORM\ManyToOne(inversedBy: 'salesProducts')]
+    #[ORM\ManyToOne(inversedBy: 'salesProducts', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sales $sale = null;
 

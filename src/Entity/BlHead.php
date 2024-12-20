@@ -22,7 +22,7 @@ class BlHead
     #[ORM\Column(length: 70)]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'blHeads')]
+    #[ORM\ManyToOne(inversedBy: 'blHeads', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Customers $customer = null;
 

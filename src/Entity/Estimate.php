@@ -22,7 +22,7 @@ class Estimate
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sales')]
+    #[ORM\ManyToOne(inversedBy: 'sales', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Customers $customer = null;
 

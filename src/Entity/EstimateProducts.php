@@ -16,10 +16,10 @@ class EstimateProducts
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'EstimateProducts')]
+    #[ORM\ManyToOne(inversedBy: 'EstimateProducts', fetch: 'EAGER')]
     private ?Products $product = null;
 
-    #[ORM\ManyToOne(inversedBy: 'EstimateProducts')]
+    #[ORM\ManyToOne(inversedBy: 'EstimateProducts', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Estimate $sale = null;
 
