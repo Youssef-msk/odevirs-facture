@@ -1,0 +1,47 @@
+<tr class="white-space-no-wrap odd productRow{{ productObject.id }}"  data-productRow="{{ productObject.id }}">
+    <td class="">
+        <div class="active-project-1 d-flex align-items-center mt-0 ">
+            <input type="hidden" class="selectedProductItems" name="dataSalesProducts[{{ productObject.id }}][id]" value="{{ productObject.id }}">
+            <input type="hidden" name="selectedProducts[]" value="{{ productObject.id }}">
+            <div class="h-avatar is-medium">
+                <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('public/data/images/products/default.png') }}';"  alt="{{ productObject.name }}" src="{{ vich_uploader_asset(productObject, 'imageFile') }}">
+            </div>
+            <div class="data-content">
+                <div>
+                    <span class="font-weight-bold">{{ productObject.nameCommerciale }}</span>
+                </div>
+                <p class="m-0 mt-1">
+                    REF: {{ productObject.ref }}
+                </p>
+            </div>
+        </div>
+    </td>
+
+    <td>
+        <input type="number" name="dataSalesProducts[{{ productObject.id }}][quantity]" class="form-control form-control-sm" id="quantity" placeholder="Quantity" value="{{ productFromTable.newProductQuantity }}" onchange="calculateQuantityTrigger({{ productObject.id }})" onkeyup="calculateQuantityTrigger({{ productObject.id }})" onkeydown="calculateQuantityTrigger({{ productObject.id }})">
+    </td>
+    <td>
+        <input type="text" readonly="readonly" name="dataSalesProducts[{{ productObject.id }}][priceHt]" class="form-control form-control-sm" id=priceHt" placeholder="Prix HT" value="{{ productFromTable.newProductPriceHt }}">
+        <input type="hidden" name="dataSalesProducts[{{ productObject.id }}][priceTotalHt]" class="form-control form-control-sm sumPriceTotalHt" id=priceTotalHt" placeholder="Prix Total HT" value="{{ productFromTable.newProductPriceTotalHt }}">
+    </td>
+    <td>
+        <input type="text" readonly="readonly"  name="dataSalesProducts[{{ productObject.id }}][taxe]" class="form-control form-control-sm sumTotalTaxe"  id=taxe" placeholder="Taxe"  value="{{ productFromTable.newProductTaxe }}">
+        <input type="hidden" name="dataSalesProducts[{{ productObject.id }}][taxeType]" class="form-control form-control-sm sumPriceTotalHt" id=taxeType"  value="{{ productObject.rateType }}">
+
+    </td>
+    <td>
+        <input type="text" name="dataSalesProducts[{{ productObject.id }}][priceTtc]" class="form-control form-control-sm"  id=priceTtc" placeholder="Taxe" value="{{ productFromTable.newProductPriceTtc }}" onchange="calculateQuantityTrigger({{ productObject.id }})" onkeyup="calculateQuantityTrigger({{ productObject.id }})" onkeydown="calculateQuantityTrigger({{ productObject.id }})">
+    </td>
+    <td class="text-left">
+        <input type="text" name="dataSalesProducts[{{ productObject.id }}][priceTotalTtc]" readonly="readonly" class="form-control form-control-sm sumPriceTotalTtc"  id=PriceTotalTtc" placeholder="Prix Total TTC" value="{{ productFromTable.newProductPriceTotalTtc }}">
+    </td>
+    <td>
+        <div class="d-flex justify-content-end align-items-center">
+            <a class="badge bg-danger delete-confirm" onclick="deleteProductRow({{ productObject.id }})" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="/crm/products/delete/2?_token=14848022687ebc82633.8m0hU1ZGrABYUbbkH_poMWEHWHf5ER9zd5ytb0Ftzto.phxpfjdz-FovKPjUZYBdWQBQG0OpRC4YGt3POHdf-JWZBkU_GCyVZjwU_w">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+            </a>
+        </div>
+    </td>
+</tr>
