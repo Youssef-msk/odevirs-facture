@@ -1,0 +1,1 @@
+INSERT INTO `sales_status` (`label`, `icon`, `name`, `color`) VALUES ('En attente paiement', '', 'pending', NULL), ('Payée', '', 'paid', NULL), ('Créée', '', 'created', NULL), ('Envoyée', '', 'sent', NULL)

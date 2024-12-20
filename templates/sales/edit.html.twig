@@ -177,6 +177,7 @@ Modification/Consultation bon livraison
                                     </tr>
                                     </thead>
                                     <tbody id="salesProductsBody">
+                                    {{ dump(sale.salesProducts) }}
                                     {% for itemProduct in sale.salesProducts %}
                                         <tr class="white-space-no-wrap odd productRow{{ itemProduct.product.id }}"  data-productRow="{{ itemProduct.product.id }}">
                                             <td class="">
