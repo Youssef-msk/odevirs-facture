@@ -38,7 +38,7 @@ class Sales
     #[ORM\OneToOne(inversedBy: 'sales', cascade: ['persist', 'remove'])]
     private ?BlHead $BlHead = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sales')]
+    #[ORM\ManyToOne(inversedBy: 'sales', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: true)]
     private ?SalesStatus $status = null;
 

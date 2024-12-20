@@ -16,7 +16,7 @@ class SalesProducts
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'salesProducts')]
+    #[ORM\ManyToOne(inversedBy: 'salesProducts', fetch: 'EAGER')]
     private ?Products $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'salesProducts')]
