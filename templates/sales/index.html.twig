@@ -87,6 +87,7 @@
                                             <tbody>
 
                                             {% for sale in sales %}
+                                                {{ dump(sale.status.label) }}
                                               <tr class="white-space-no-wrap">
                                                 <td>
                                                     {{ sale.reference }}
