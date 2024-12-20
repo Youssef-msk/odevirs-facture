@@ -333,6 +333,7 @@ Modification/Consultation bon livraison
                 allowClear: true
             });
 
+
             $('#addNewCutomer').click(function() {
                 var form = $('#saleNewCustomer');
                 $.ajax({
@@ -365,6 +366,13 @@ Modification/Consultation bon livraison
                 } else {
                     $('#paymentReference').addClass('hidden');
                     $('#sales_paymentReference').val('');
+                }
+
+                if ($(this).val() === '3' || $(this).val() === '3') {
+                    $('#sales_echeance').removeClass('hidden');
+                } else {
+                    $('#sales_echeance').addClass('hidden');
+                    $('#sales_echeance').val('');
                 }
             });
             $('#sales_paymentMode').change();
