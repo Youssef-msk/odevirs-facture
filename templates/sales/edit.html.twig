@@ -369,10 +369,9 @@ Modification/Consultation bon livraison
                 }
 
                 if ($(this).val() === '3' || $(this).val() === '3') {
-                    $('#sales_echeance').removeClass('hidden');
-                } else {
                     $('#sales_echeance').addClass('hidden');
-                    $('#sales_echeance').val('');
+                } else {
+                    $('#sales_echeance').removeClass('hidden');
                 }
             });
             $('#sales_paymentMode').change();
