@@ -3,13 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\DeliveryNote;
-use App\Entity\Sales;
-use App\Entity\SalesProducts;
 use App\Form\DeliveryNoteType;
-use App\Form\SalesType;
 use App\Repository\DeliveryNoteRepository;
-use App\Repository\ProductsRepository;
-use App\Repository\SalesProductsRepository;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -27,15 +22,9 @@ class deliveryNoteController extends AbstractController
 {
     private $kernel;
 
-    private $productsRepository;
-
-    private $salesProductsRepository;
-
-    public function __construct(KernelInterface $kernel,ProductsRepository $productsRepository,SalesProductsRepository $salesProductsRepository)
+    public function __construct(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
-        $this->productsRepository = $productsRepository;
-        $this->salesProductsRepository = $salesProductsRepository;
     }
 
     #[Route('/', name: 'app_delivery_note_index', methods: ['GET'])]
@@ -46,7 +35,7 @@ class deliveryNoteController extends AbstractController
         $sortedEntities = $queryBuilder->getQuery()->getResult();
 
         return $this->render('delivery_note/index.html.twig', [
-            'sales' => $sortedEntities,
+            'deliveryNoteList' => $sortedEntities,
         ]);
     }
 
@@ -97,7 +86,6 @@ class deliveryNoteController extends AbstractController
         $form->handleRequest($request);
         $data = $request->request->all();
 
-        //$productListToAdd = isset($data["dataSalesProducts"]) ? $data["dataSalesProducts"] : [];
 
         if ($form->isSubmitted() && $form->isValid()) {
             $deliveryNote->setUpdatedAt(new \DateTimeImmutable());
@@ -113,7 +101,7 @@ class deliveryNoteController extends AbstractController
             //insertProducts
             //$this->updateProductsFromRequest($sale,$productListToAdd,true);
 
-            return $this->redirectToRoute('app_sales_edit', ["id" => $deliveryNote->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_delivery_note_edit', ["id" => $deliveryNote->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('delivery_note/edit.html.twig', [
