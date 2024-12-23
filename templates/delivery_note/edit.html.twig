@@ -47,33 +47,25 @@ Modification/Consultation bon sortie
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="row g-3">
-                                <div class="col-md-6 mb-3">
-                                    <label  class="form-label font-weight-bold text-muted text-uppercase">Référence :</label>
-                                    {{ form_widget(form.reference,{'attr': {'class': 'form-control','readonly':'readonly'}}) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label  class="form-label font-weight-bold text-muted text-uppercase">Client :</label>
-                                    {{ form_widget(form.customer,{'attr': {'class': 'form-select form-control choicesjsSelect2'}}) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label  class="form-label font-weight-bold text-muted text-uppercase">Mode paiement :</label>
-                                    {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Date :</label>
-                                    <input type="date" name="salesDate" class="form-control" value="{{ currentDate is defined and currentDate  ? currentDate :deliveryNote.createdAt|date('Y-m-d') }}">
-                                </div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label  class="form-label font-weight-bold text-muted text-uppercase">Référence :</label>
+                            {{ form_widget(form.reference,{'attr': {'class': 'form-control','readonly':'readonly'}}) }}
                         </div>
-                        <div class="col-lg-6">
-                            <div class="row g-3">
-                                <div class="col-md-6 mb-4">
-                                    <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">Commentaire :</label>
-                                    {{ form_widget(form.comment,{'attr': {'class': 'form-control','placeholder':'Commentaire ...'}}) }}
-                                </div>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label  class="form-label font-weight-bold text-muted text-uppercase">Client :</label>
+                            {{ form_widget(form.customer,{'attr': {'class': 'form-select form-control choicesjsSelect2'}}) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label  class="form-label font-weight-bold text-muted text-uppercase">Mode paiement :</label>
+                            {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Date :</label>
+                            <input type="date" name="salesDate" class="form-control" value="{{ currentDate is defined and currentDate  ? currentDate :deliveryNote.createdAt|date('Y-m-d') }}">
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">Commentaire :</label>
+                            {{ form_widget(form.comment,{'attr': {'class': 'form-control','placeholder':'Commentaire ...'}}) }}
                         </div>
                     </div>
                 </div>
