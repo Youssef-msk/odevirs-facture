@@ -25,13 +25,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 #[Route('/crm/delivery/note')]
 class deliveryNoteController extends AbstractController
 {
-    //NE GERE PAS TOUT (les pluriels...)
-#Variables
-    public $leChiffreSaisi;
-    public $enLettre='';
-    public $chiffre=array(1=>"un ",2=>"deux ",3=>"trois ",4=>"quatre ",5=>"cinq ",6=>"six ",7=>"sept ",8=>"huit ",9=>"neuf ",10=>"dix ",11=>"onze ",12=>"douze ",13=>"treize ",14=>"quatorze ",15=>"quinze ",16=>"seize ",17=>"dix-sept ",18=>"dix-huit ",19=>"dix-neuf ",20=>"vingt ",30=>"trente ",40=>"quarante ",50=>"cinquante ",60=>"soixante ",70=>"soixante-dix ",80=>"quatre-vingt ",90=>"quatre-vingt-dix ");
-
-
     private $kernel;
 
     private $productsRepository;
@@ -92,6 +85,39 @@ class deliveryNoteController extends AbstractController
         return $this->renderForm('delivery_note/edit.html.twig', [
             'deliveryNote' => $deliveryNote,
             'currentDate' => $currentDate,
+            'form' => $form,
+        ]);
+    }
+
+
+    #[Route('/{id}/edit', name: 'app_delivery_note_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, DeliveryNote $deliveryNote, DeliveryNoteRepository $deliveryNoteRepository): Response
+    {
+        $form = $this->createForm(DeliveryNoteType::class, $deliveryNote,["edit" => true]);
+        $form->handleRequest($request);
+        $data = $request->request->all();
+
+        //$productListToAdd = isset($data["dataSalesProducts"]) ? $data["dataSalesProducts"] : [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $deliveryNote->setUpdatedAt(new \DateTimeImmutable());
+            $dateString = $data["salesDate"];
+            $format = 'Y-m-d';
+
+            $dateTime = DateTimeImmutable::createFromFormat($format, $dateString);
+
+            $deliveryNoteRepository->save($deliveryNote, true);
+
+            //delete prev products
+            //$this->deleteProductsSles($sale);
+            //insertProducts
+            //$this->updateProductsFromRequest($sale,$productListToAdd,true);
+
+            return $this->redirectToRoute('app_sales_edit', ["id" => $deliveryNote->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('delivery_note/edit.html.twig', [
+            'deliveryNote' => $deliveryNote,
             'form' => $form,
         ]);
     }
