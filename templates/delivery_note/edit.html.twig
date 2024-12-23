@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
    {% block title %}
 {% if app.current_route != "app_sales_new" %}
-Modification/Consultation bon livraison
+Modification/Consultation bon sortie
 {% else %}
-    Ajout bon livraison
+    Ajout bon sortie
 {% endif %}
    {% endblock %}
-
 
 {% block body %}
     {{ form_start(form,{'attr': {'class': 'saveForm','id': 'saveForm'}}) }}
@@ -19,51 +18,21 @@ Modification/Consultation bon livraison
                         <div class="d-flex align-items-center justify-content-between">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ path('app_sales_index') }}">Bons de livraison</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Ajout nouveau bon de livraison</li>
+                                    <li class="breadcrumb-item"><a href="{{ path('app_delivery_note_index') }}">Bons de sortie</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {% if app.current_route != "app_sales_new" %}
+                                            Modification/Consultation bon sortie
+                                        {% else %}
+                                            Ajout bon sortie
+                                        {% endif %}
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
-                        {% if app.current_route != "app_sales_new" %}
-                        <a class="btn btn-primary btn-sm" href="{{ path('app_sales_bl',{'id':sale.id}) }}" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            Télécharger bon de livraison N° {{ sale.reference }}
-                        </a>
-                        {% endif %}
                     </div>
                 </div>
-                {% if app.current_route != "app_sales_new" %}
-                    {% if not sale.generatedInvoice %}
-                        <div class="col-lg-12 mb-3">
-                            <div class="d-flex justify-content-between align-items-end">
-                                <h4 class="font-weight-bold">Nouveau bons de livraison</h4>
-                                <a class="btn btn-primary btn-sm" href="{{ path('app_sales_invoice',{'id':sale.id}) }}" target="_blank">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    Facturer le bon de livraison
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
 
-                    {% if sale.generatedInvoice == 1 %}
-                        <div class="col-lg-12 mb-3">
-                            <div class="d-flex justify-content-between align-items-end">
-                                <h4 class="font-weight-bold">Nouveau bons de livraison</h4>
 
-                                <a class="btn btn-primary btn-sm" href="{{ path('app_sales_invoice',{'id':sale.id}) }}" target="_blank">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    Télécharger la facture N° {{ sale.invoiceNumber }}
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endif %}
             </div>
             <div class="card">
                 <div class="d-flex justify-content-between align-items-end p-1">
@@ -87,38 +56,18 @@ Modification/Consultation bon livraison
                                 <div class="col-md-6 mb-3">
                                     <label  class="form-label font-weight-bold text-muted text-uppercase">Client :</label>
                                     {{ form_widget(form.customer,{'attr': {'class': 'form-select form-control choicesjsSelect2'}}) }}
-
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label  class="form-label font-weight-bold text-muted text-uppercase">Mode paiement :</label>
                                     {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
-                                </div>
-                                <div class="col-md-6 mb-3 hidden" id="paymentReference">
-                                    <label  class="form-label font-weight-bold text-muted text-uppercase">N° (chèque/effet) :</label>
-                                    {{ form_widget(form.paymentReference,{'attr': {'class': 'form-select form-control'}}) }}
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="row g-3">
                                 <div class="col-md-6 mb-3">
-                                    <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Bon de commande :</label>
-                                    {{ form_widget(form.bonCommande,{'attr': {'class': 'form-select form-control'}}) }}
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Statut :</label>
-                                    {{ form_widget(form.status,{'attr': {'class': 'form-select form-control'}}) }}
-                                </div>
-
-                                <div class="col-md-6 mb-3">
                                     <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Date :</label>
-                                    <input type="date" name="salesDate" class="form-control" value="{{ currentDate is defined and currentDate  ? currentDate :sale.createdAt|date('Y-m-d') }}">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">Date Echéance :</label>
-                                    <input type="date" id="sales_echeance" name="sales[echeance]" class="form-control" placeholder="Date Echéance ..." value="{{ sale.echeance }}">
+                                    <input type="date" name="salesDate" class="form-control" value="{{ currentDate is defined and currentDate  ? currentDate :deliveryNote.createdAt|date('Y-m-d') }}">
                                 </div>
                             </div>
                         </div>
@@ -177,54 +126,7 @@ Modification/Consultation bon livraison
                                     </tr>
                                     </thead>
                                     <tbody id="salesProductsBody">
-                                    {% for itemProduct in sale.salesProducts %}
-                                        <tr class="white-space-no-wrap odd productRow{{ itemProduct.product.id }}"  data-productRow="{{ itemProduct.product.id }}">
-                                            <td class="">
-                                                <div class="active-project-1 d-flex align-items-center mt-0 ">
-                                                    <input type="hidden" class="selectedProductItems" name="dataSalesProducts[{{ itemProduct.product.id }}][id]" value="{{ itemProduct.product.id }}">
-                                                    <div class="h-avatar is-medium">
-                                                        <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('public/data/images/products/default.png') }}';"  alt="{{ itemProduct.product.name }}" src="{{ vich_uploader_asset(itemProduct.product, 'imageFile') }}">
-                                                    </div>
-                                                    <div class="data-content">
-                                                        <div>
-                                                            <span class="font-weight-bold">{{ itemProduct.product.nameCommerciale }}</span>
-                                                        </div>
-                                                        <p class="m-0 mt-1">
-                                                            REF: {{ itemProduct.product.ref }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
 
-                                            <td>
-                                                <input type="number" name="dataSalesProducts[{{ itemProduct.product.id }}][quantity]" class="form-control form-control-sm" id="quantity" placeholder="Quantity" value="{{ itemProduct.quantity }}" onchange="calculateQuantityTrigger({{ itemProduct.product.id }})" onkeyup="calculateQuantityTrigger({{ itemProduct.product.id }})" onkeydown="calculateQuantityTrigger({{ itemProduct.product.id }})">
-                                            </td>
-                                            <td>
-                                                <input type="text" readonly="readonly" name="dataSalesProducts[{{ itemProduct.product.id }}][priceHt]" class="form-control form-control-sm" id=priceHt" placeholder="Prix HT" value="{{ itemProduct.priceHt|number_format(2, ',','') }}">
-                                                <input type="hidden" name="dataSalesProducts[{{ itemProduct.product.id }}][priceTotalHt]" class="form-control form-control-sm sumPriceTotalHt" id=priceTotalHt" placeholder="Prix Total HT" value="{{ itemProduct.priceTotalHt }}">
-                                            </td>
-                                            <td>
-                                                <input type="text" readonly="readonly"  name="dataSalesProducts[{{ itemProduct.product.id }}][taxe]" class="form-control form-control-sm sumTotalTaxe"  id=taxe" placeholder="Taxe"  value="{{ itemProduct.taxe|number_format(2, ',','') }}">
-                                                <input type="hidden" name="dataSalesProducts[{{ itemProduct.product.id }}][taxeType]" class="form-control form-control-sm sumPriceTotalHt" id=taxeType"  value="{{ itemProduct.taxeType }}">
-
-                                            </td>
-                                            <td>
-                                                <input type="text" name="dataSalesProducts[{{ itemProduct.product.id }}][priceTtc]" class="form-control form-control-sm"  id=priceTtc" placeholder="Taxe" value="{{ itemProduct.priceTtc|number_format(2, ',','') }}" onchange="calculateQuantityTrigger({{ itemProduct.product.id }})" onkeyup="calculateQuantityTrigger({{ itemProduct.product.id }})" onkeydown="calculateQuantityTrigger({{ itemProduct.product.id }})">
-                                            </td>
-                                            <td class="text-left">
-                                                <input type="text" name="dataSalesProducts[{{ itemProduct.product.id }}][priceTotalTtc]" readonly="readonly" class="form-control form-control-sm sumPriceTotalTtc"  id=PriceTotalTtc" placeholder="Prix Total TTC" value="{{ itemProduct.priceTotalTtc|number_format(2, ',','') }}">
-                                            </td>
-                                            <td>
-                                                <div class="d-flex justify-content-end align-items-center">
-                                                    <a class="badge bg-danger delete-confirm" onclick="deleteProductRow({{ itemProduct.product.id }})" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="/crm/products/delete/2?_token=14848022687ebc82633.8m0hU1ZGrABYUbbkH_poMWEHWHf5ER9zd5ytb0Ftzto.phxpfjdz-FovKPjUZYBdWQBQG0OpRC4YGt3POHdf-JWZBkU_GCyVZjwU_w">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
 
                                     </tbody>
 
@@ -359,21 +261,6 @@ Modification/Consultation bon livraison
                 });
             });
 
-
-            $('#sales_paymentMode').change(function () {
-                if ($(this).val() === '1' || $(this).val() === '2') {
-                    $('#paymentReference').removeClass('hidden');
-                } else {
-                    $('#paymentReference').addClass('hidden');
-                    $('#sales_paymentReference').val('');
-                }
-
-                if ($(this).val() === '3' || $(this).val() === '3') {
-                    $('#sales_echeance').addClass('hidden');
-                } else {
-                    $('#sales_echeance').removeClass('hidden');
-                }
-            });
             $('#sales_paymentMode').change();
             calculateSumFooterElements();
 
