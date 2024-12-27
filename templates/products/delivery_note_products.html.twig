@@ -1,0 +1,30 @@
+{% for product in products %}
+    <tr class="white-space-no-wrap">
+        <td class="pr-0 sorting_1">
+            <div class="custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" name="productsToAdd" class="custom-control-input m-0" id="addProduct{{ product.id }}" value="{{ product.id }}">
+                <label class="custom-control-label" for="addProduct{{ product.id }}"></label>
+            </div>
+        </td>
+
+        <td class="">
+            <div class="active-project-1 d-flex align-items-center mt-0 ">
+                <div class="h-avatar is-medium">
+                    <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('data/images/products/default.png') }}';"  alt="{{ product.name }}" src="{{ vich_uploader_asset(product, 'imageFile') }}">
+                </div>
+                <div class="data-content">
+                    <div>
+                        <span class="font-weight-bold">{{ product.nameCommerciale }}</span>
+                    </div>
+                    <p class="m-0 mt-1">
+                        REF: {{ product.ref }}
+                    </p>
+                </div>
+            </div>
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="10">Aucun enregistrement trouvé</td>
+    </tr>
+{% endfor %}

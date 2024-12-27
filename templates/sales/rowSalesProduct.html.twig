@@ -4,7 +4,7 @@
             <input type="hidden" class="selectedProductItems" name="dataSalesProducts[{{ productObject.id }}][id]" value="{{ productObject.id }}">
             <input type="hidden" name="selectedProducts[]" value="{{ productObject.id }}">
             <div class="h-avatar is-medium">
-                <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('public/data/images/products/default.png') }}';"  alt="{{ productObject.name }}" src="{{ vich_uploader_asset(productObject, 'imageFile') }}">
+                <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('data/images/products/default.png') }}';"  alt="{{ productObject.name }}" src="{{ vich_uploader_asset(productObject, 'imageFile') }}">
             </div>
             <div class="data-content">
                 <div>

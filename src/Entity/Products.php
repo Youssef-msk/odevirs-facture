@@ -68,6 +68,9 @@ class Products
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: SalesProducts::class)]
     private Collection $salesProducts;
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: DeliveryNoteProducts::class)]
+    private Collection $deliveryNoteProducts;
+
     #[ORM\Column]
     private ?bool $enabled = null;
 
@@ -94,6 +97,7 @@ class Products
     {
         $this->sales = new ArrayCollection();
         $this->salesProducts = new ArrayCollection();
+        $this->deliveryNoteProducts= new ArrayCollection();
         $this->enabled = true;
     }
 
@@ -378,6 +382,22 @@ class Products
         $this->priceRevient = $priceRevient;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getDeliveryNoteProducts(): ArrayCollection|Collection
+    {
+        return $this->deliveryNoteProducts;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $deliveryNoteProducts
+     */
+    public function setDeliveryNoteProducts(ArrayCollection|Collection $deliveryNoteProducts): void
+    {
+        $this->deliveryNoteProducts = $deliveryNoteProducts;
     }
 
 

@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\DeliveryNote;
+use App\Entity\DeliveryNoteProducts;
+use App\Entity\Sales;
+use App\Entity\SalesProducts;
 use App\Form\DeliveryNoteType;
 use App\Repository\DeliveryNoteRepository;
+use App\Repository\ProductsRepository;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -80,7 +84,7 @@ class deliveryNoteController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_delivery_note_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, DeliveryNote $deliveryNote, DeliveryNoteRepository $deliveryNoteRepository): Response
+    public function edit(Request $request, DeliveryNote $deliveryNote, DeliveryNoteRepository $deliveryNoteRepository,ProductsRepository $productsRepository): Response
     {
         $form = $this->createForm(DeliveryNoteType::class, $deliveryNote,["edit" => true]);
         $form->handleRequest($request);
@@ -107,7 +111,48 @@ class deliveryNoteController extends AbstractController
         return $this->renderForm('delivery_note/edit.html.twig', [
             'deliveryNote' => $deliveryNote,
             'form' => $form,
+            'products' => $productsRepository->findByOrder("0")
         ]);
     }
+
+
+    #[Route('/products/view_new_rows', name: 'app_delivery_note_rows', methods: ['GET','POST'])]
+    public function salesViewNewRow(Request $request,ProductsRepository $productsRepository): Response
+    {
+        $newProductData = $request->request->all();
+        return $this->renderForm('delivery_note/rowSalesProduct.html.twig', [
+            'productsObjects' => $productsRepository->findBy([
+                "id" => array_values($newProductData["options"])
+            ])
+        ]);
+    }
+
+
+    private function updateProductsFromRequest(DeliveryNote $deliveryNote,$productListToAdd,$update = false)
+    {
+        if ($productListToAdd and is_array($productListToAdd) and count($productListToAdd)){
+            foreach ($productListToAdd as $productId => $productData){
+                //$productsalestored = $this->productsRepository->find($productId);
+                //$productsalestored->setQuantity($productsalestored->getQuantity() - intval($productData["quantity"]));
+                $productSale = new DeliveryNoteProducts();
+                $productSale->setSale($sale);
+                $productSale->setQuantity(intval($productData["quantity"]));
+                $productSale->setCreatedAt(new \DateTimeImmutable());
+                $productSale->setUpdatedAt(new \DateTimeImmutable());
+                $productSale->setProduct($this->productsRepository->find($productId));
+                $productSale->setPriceHt(floatval(str_replace(",",".",$productData["priceHt"])));
+                $productSale->setPriceTotalHt(floatval(str_replace(",",".",$productData["priceTotalHt"])));
+                $productSale->setPriceTtc(floatval(str_replace(",",".",$productData["priceTtc"])));
+                $productSale->setPriceTotalTtc(floatval(str_replace(",",".",$productData["priceTotalTtc"])));
+                $productSale->setTaxeType($productData["taxeType"]);
+                $productSale->setTaxe(floatval(str_replace(",",".",$productData["taxe"])));
+
+                //$this->productsRepository->save($productsalestored);
+                $this->salesProductsRepository->save($productSale,true);
+
+            }
+        }
+    }
+
 
 }

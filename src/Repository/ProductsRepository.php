@@ -80,6 +80,40 @@ class ProductsRepository extends ServiceEntityRepository
     /**
      * @return Products[] Returns an array of Products objects
      */
+    public function findByTermObjects($term,$alreadySelectedProducts)
+    {
+        $alreadySelectedProducts = explode(",",$alreadySelectedProducts);
+        $qb = $this->createQueryBuilder('p');
+        return $qb
+            ->where($qb->expr()->notIn('p.id', $alreadySelectedProducts))
+            ->andWhere("(p.nameCommerciale like :term or p.name like :term or p.ref like :term) and p.enabled = 1 and p.deleted = 0 and  p.quantity > 0")
+            ->setParameter('term', '%'.$term.'%')
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults(15)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Products[] Returns an array of Products objects
+     */
+    public function findByOrder($alreadySelectedProducts)
+    {
+        $alreadySelectedProducts = explode(",",$alreadySelectedProducts);
+        $qb = $this->createQueryBuilder('p');
+        return $qb
+            ->where($qb->expr()->notIn('p.id', $alreadySelectedProducts))
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Products[] Returns an array of Products objects
+     */
     public function findByCriteriaReporting($criteria)
     {
         $queryBuilder = $this->createQueryBuilder('p');

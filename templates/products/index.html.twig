@@ -88,7 +88,7 @@
                                                 <td class="">
                                                     <div class="active-project-1 d-flex align-items-center mt-0 ">
                                                         <div class="h-avatar is-medium">
-                                                            <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('public/data/images/products/default.png') }}';"  alt="{{ product.name }}" src="{{ vich_uploader_asset(product, 'imageFile') }}">
+                                                            <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('data/images/products/default.png') }}';"  alt="{{ product.name }}" src="{{ vich_uploader_asset(product, 'imageFile') }}">
                                                         </div>
                                                         <div class="data-content">
                                                             <div>
@@ -223,7 +223,7 @@
                 maxSelection: 1,
                 renderer: function(data){
                     return '<div class="active-project-1 d-flex align-items-center mt-0"><div class="h-avatar is-medium">' +
-                        '<img class="avatar rounded" alt="DESIGNATION" src="/public/data/images/products/' + data.picture + '" />' +
+                        '<img class="avatar rounded" alt="DESIGNATION" src="data/images/products/' + data.picture + '" />' +
                         '</div><div class="data-content"><div><span class="font-weight-bold">' + data.name +
                         '</span></div><p class="m-0 mt-1">REF:' + data.ref +
                         '</p></div></div>';

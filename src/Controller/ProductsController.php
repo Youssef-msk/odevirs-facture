@@ -155,6 +155,19 @@ class ProductsController extends AbstractController
         return new JsonResponse($products);
     }
 
+    #[Route('/search/delivery_note/product', name: 'app_products_delivery_note_search', methods: ['POST'])]
+    public function searchProductDeliveryNote(Request $request, ProductsRepository $productsRepository)
+    {
+        $term = $request->request->get("query");
+        $alreadySelectedProducts = $request->query->get("alreadySelectedProducts");
+
+        $products = $productsRepository->findByTermObjects($term,$alreadySelectedProducts);
+
+        return $this->renderForm('products/delivery_note_products.html.twig', [
+            'products' => $products,
+        ]);
+    }
+
     #[Route('/reporting/product', name: 'app_products_reporting', methods: ['POST','GET'])]
     public function searchProductForReporting(Request $request, ProductsRepository $productsRepository)
     {
