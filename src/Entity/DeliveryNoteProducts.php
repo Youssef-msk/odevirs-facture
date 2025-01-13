@@ -3,10 +3,10 @@
 namespace App\Entity;
 
 use App\Entity\Trait\CreatedAtTrait;
-use App\Repository\SalesProductsRepository;
+use App\Repository\DeliveryNoteProductsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SalesProductsRepository::class)]
+#[ORM\Entity(repositoryClass: DeliveryNoteProductsRepository::class)]
 class DeliveryNoteProducts
 {
     use CreatedAtTrait;

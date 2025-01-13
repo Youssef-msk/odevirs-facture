@@ -103,20 +103,56 @@ Modification/Consultation bon sortie
                                         </tr>
                                         </thead>
                                         <tbody class="tableProducts">
-
+                                        {% for productSaleObject in deliveryNoteProducts %}
+                                            {% set productObject = productSaleObject.product %}
+                                            <tr class="white-space-no-wrap odd productRow{{ productObject.id }}"  data-productRow="{{ productObject.id }}">
+                                                <td>
+                                                    <div class="active-project-1 d-flex align-items-center mt-0 ">
+                                                        <input type="hidden" class="selectedProductItems" name="dataSalesProducts[{{ productObject.id }}][id]" value="{{ productObject.id }}">
+                                                        <input type="hidden" name="selectedProducts[]" value="{{ productObject.id }}">
+                                                        <div class="h-avatar is-medium">
+                                                            <img class="avatar rounded" onerror="this.onerror=null;this.src='{{ asset('data/images/products/default.png') }}';"  alt="{{ productObject.name }}" src="{{ vich_uploader_asset(productObject, 'imageFile') }}">
+                                                        </div>
+                                                        <div class="data-content">
+                                                            <div>
+                                                                <span class="font-weight-bold">{{ productObject.nameCommerciale }}</span>
+                                                            </div>
+                                                            <p class="m-0 mt-1">
+                                                                REF: {{ productObject.ref }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" name="dataSalesProducts[{{ productObject.id }}][quantity]" class="form-control form-control-sm" id="quantity" placeholder="Quantity" value="{{ productSaleObject.quantity }}" onchange="calculateQuantityTrigger({{ productObject.id }})" onkeyup="calculateQuantityTrigger({{ productObject.id }})" onkeydown="calculateQuantityTrigger({{ productObject.id }})">
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="text" readonly="readonly" name="dataSalesProducts[{{ productObject.id }}][priceHt]" class="form-control form-control-sm" id=priceHt" placeholder="Prix HT" value="{{ productObject.priceHt }}">
+                                                </td>
+                                                <td class="text-center" style="cursor: pointer;color: red">
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <a class="badge bg-danger delete-confirm-dn" onclick="deleteProductRow({{ productObject.id }})" data-toggle="tooltip" data-placement="top" >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
 
                                         </tbody>
                                     </table>
                                     <div class="text-start m-5">
-                                        <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#exampleModalLong">Ajouter des produits</button>
+                                        <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#ModalAddProducts">Ajouter des produits</button>
                                     </div>
 
                                     <!-- Modal -->
-                                    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                    <div class="modal fade" id="ModalAddProducts" tabindex="-1" role="dialog" aria-labelledby="ModalAddProductsTitle" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLongTitle">La liste de produits</h5>
+                                                    <h5 class="modal-title" id="ModalAddProductsTitle">La liste des produits</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
@@ -285,16 +321,21 @@ Modification/Consultation bon sortie
 
             $('#addProductToTable').click(function() {
                 var selectedValues = $('input[name="productsToAdd"]:checked').map(function() {
-                    return this.value;
+                    return {
+                        'id': this.value,
+                        'quantity': 1,
+                    };
                 }).get();
 
                 $.ajax({
                     type:"POST",
-                    url : "{{ path('app_delivery_note_rows') }}",
+                    url : "{{ path('app_delivery_note_rows',{'deliveryNote':deliveryNote.id}) }}",
                     data: { options: selectedValues },
                     success : function(response) {
                         var newRows = $(response);
                         $('.tableProducts').append(newRows);
+                        $("#ModalAddProducts").modal("hide");
+                        $('input[type="checkbox"][name="productsToAdd"]').prop('checked', false);
                     },
                     error: function() {
 
@@ -339,6 +380,12 @@ Modification/Consultation bon sortie
 
         function onErrorEvent(img){
             img.onerror=null;img.src="data/images/products/default.png";
+        }
+
+        function deleteProductRow(productId){
+            var elementProductRow = "productRow"+productId+"";
+            var $productRow = $("." + elementProductRow + "");
+            $productRow.remove();
         }
 
     </script>

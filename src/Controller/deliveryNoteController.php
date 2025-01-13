@@ -7,6 +7,7 @@ use App\Entity\DeliveryNoteProducts;
 use App\Entity\Sales;
 use App\Entity\SalesProducts;
 use App\Form\DeliveryNoteType;
+use App\Repository\DeliveryNoteProductsRepository;
 use App\Repository\DeliveryNoteRepository;
 use App\Repository\ProductsRepository;
 use DateTimeImmutable;
@@ -84,12 +85,20 @@ class deliveryNoteController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_delivery_note_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, DeliveryNote $deliveryNote, DeliveryNoteRepository $deliveryNoteRepository,ProductsRepository $productsRepository): Response
+    public function edit(Request $request, DeliveryNote $deliveryNote,DeliveryNoteProductsRepository $deliveryNoteProductsRepository, DeliveryNoteRepository $deliveryNoteRepository,ProductsRepository $productsRepository): Response
     {
         $form = $this->createForm(DeliveryNoteType::class, $deliveryNote,["edit" => true]);
         $form->handleRequest($request);
         $data = $request->request->all();
+        $deliveryNoteProducts = [];
 
+        $productsDeliveryNoteObjects = $deliveryNoteProductsRepository->findBy([
+            "deliveryNote" => $deliveryNote
+        ],orderBy: ["id" => "DESC"]);
+
+        foreach ($productsDeliveryNoteObjects as $productsDeliveryNoteItem){
+            $deliveryNoteProducts[] = $productsDeliveryNoteItem->getProduct();
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $deliveryNote->setUpdatedAt(new \DateTimeImmutable());
@@ -111,19 +120,45 @@ class deliveryNoteController extends AbstractController
         return $this->renderForm('delivery_note/edit.html.twig', [
             'deliveryNote' => $deliveryNote,
             'form' => $form,
+            'deliveryNoteProducts' => $productsDeliveryNoteObjects,
             'products' => $productsRepository->findByOrder("0")
         ]);
     }
 
 
-    #[Route('/products/view_new_rows', name: 'app_delivery_note_rows', methods: ['GET','POST'])]
-    public function salesViewNewRow(Request $request,ProductsRepository $productsRepository): Response
+    #[Route('/products/view_new_rows/{deliveryNote}', name: 'app_delivery_note_rows', methods: ['GET','POST'])]
+    public function salesViewNewRow(Request $request,DeliveryNote $deliveryNote,ProductsRepository $productsRepository,DeliveryNoteProductsRepository $deliveryNoteProductsRepository): Response
     {
         $newProductData = $request->request->all();
+        $productsDataDetails = $newProductData["options"];
+        $productsObjects = [];
+        $productsDeliveryNoteObjects = $deliveryNoteProductsRepository->findBy([
+            "deliveryNote" => $deliveryNote
+        ],orderBy: ["id" => "DESC"]);
+
+        foreach ($productsDeliveryNoteObjects as $productsDeliveryNoteItem){
+            $deliveryNoteProductsRepository->remove($productsDeliveryNoteItem,true);
+        }
+
+        foreach ($productsDataDetails as $productsDataDetailItem){
+            $productSale = new DeliveryNoteProducts();
+            $productSale->setDeliveryNote($deliveryNote);
+            $productSale->setQuantity(intval($productsDataDetailItem["quantity"]));
+            $productSale->setCreatedAt(new \DateTimeImmutable());
+            $productSale->setUpdatedAt(new \DateTimeImmutable());
+            $productsObjects[] = $productsRepository->find($productsDataDetailItem["id"]);
+            $productSale->setProduct($productsRepository->find($productsDataDetailItem["id"]));
+            $productSale->setPriceHt(0);
+            $productSale->setPriceTotalHt(0);
+            $productSale->setPriceTtc(0);
+            $productSale->setPriceTotalTtc(0);
+            $productSale->setTaxeType(0);
+            $productSale->setTaxe(0);
+            $deliveryNoteProductsRepository->save($productSale,true);
+        }
+
         return $this->renderForm('delivery_note/rowSalesProduct.html.twig', [
-            'productsObjects' => $productsRepository->findBy([
-                "id" => array_values($newProductData["options"])
-            ])
+            'productsObjects' => $productsObjects
         ]);
     }
 

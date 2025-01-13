@@ -37,6 +37,8 @@ class DeliveryNote
     #[ORM\Column]
     private ?bool $generatedSale = null;
 
+    #[ORM\OneToMany(mappedBy: 'deliveryNote', targetEntity: DeliveryNoteProducts::class)]
+    private Collection $deliveryNoteProducts;
 
     public function __construct()
     {
@@ -112,6 +114,22 @@ class DeliveryNote
     public function setGeneratedSale(?bool $generatedSale): void
     {
         $this->generatedSale = $generatedSale;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getDeliveryNoteProducts(): Collection
+    {
+        return $this->deliveryNoteProducts;
+    }
+
+    /**
+     * @param Collection $deliveryNoteProducts
+     */
+    public function setDeliveryNoteProducts(Collection $deliveryNoteProducts): void
+    {
+        $this->deliveryNoteProducts = $deliveryNoteProducts;
     }
 
 
