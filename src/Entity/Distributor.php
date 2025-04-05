@@ -45,6 +45,9 @@ class Distributor
     #[ORM\OneToMany(mappedBy: 'distributor', targetEntity: Products::class)]
     private Collection $products;
 
+    #[ORM\OneToMany(mappedBy: 'distributor', targetEntity: Purchases::class)]
+    private Collection $purchases;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();

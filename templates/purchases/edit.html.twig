@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+   {% block title %}
+{% if app.current_route != "app_purchases_new" %}
+Modification/Consultation achat
+{% else %}
+    Ajout achat
+{% endif %}
+   {% endblock %}
+
+
+{% block body %}
+    {{ form_start(form,{'attr': {'class': 'saveForm','id': 'saveForm'}}) }}
+
+    <div class="content-page">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb p-0 mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_purchases_index') }}">Achats</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Ajout nouveau achat</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                {% if app.current_route != "app_purchases_new" %}
+                        <div class="col-lg-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-end">
+                                <h4 class="font-weight-bold">Nouveau bons de livraison</h4>
+
+                                <a class="btn btn-primary btn-sm" href="{{ path('app_purchases_invoice',{'id':purchase.id}) }}" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Télécharger l'achat N° {{ purchase.reference }}
+                                </a>
+                            </div>
+                        </div>
+                {% endif %}
+            </div>
+            <div class="card">
+                <div class="d-flex justify-content-between align-items-end p-1">
+                    <h5 class="font-weight-bold"></h5>
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target=".modal-add-customer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Ajouter un nouveau fournisseur
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row g-3">
+                                <div class="col-md-6 mb-3">
+                                    <label  class="form-label font-weight-bold text-muted text-uppercase">Référence :</label>
+                                    {{ form_widget(form.reference,{'attr': {'class': 'form-control','readonly':'readonly'}}) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label  class="form-label font-weight-bold text-muted text-uppercase">Fournisseur :</label>
+                                    {{ form_widget(form.distributor,{'attr': {'class': 'form-select form-control choicesjsSelect2'}}) }}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">Commentaire :</label>
+                                    {{ form_widget(form.comment,{'attr': {'class': 'form-control','placeholder':'Commentaire ...'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row g-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Text6" class="form-label font-weight-bold text-muted text-uppercase">Date :</label>
+                                    <input type="date" name="purchaseDate" class="form-control" value="{{ currentDate is defined and currentDate  ? currentDate :purchase.createdAt|date('Y-m-d') }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label  class="form-label font-weight-bold text-muted text-uppercase">Mode paiement :</label>
+                                    {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button class="btn btn-primary px-4" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"></path>
+                            </svg>
+                            Sauvegarder
+                        </button>
+                    </div>
+                </div>
+
+                {{ form_widget(form._token) }}
+            </div>
+        </div>
+    </div>
+
+    {{ form_end(form, {'render_rest': false}) }}
+
+    <div class="modal fade modal-add-customer" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajout nouveau fournisseur</h5>
+                    <button type="button" class="close button-modal-add-customer" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="saleNewCustomer" method="post">
+                        <div class="form-group">
+                            <label for="company">Raison sociale:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[company]" id="company">
+                        </div>
+                        <div class="form-group">
+                            <label for="ice">ICE:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[ice]" id="ice">
+                        </div>
+                        <div class="form-group">
+                            <label for="adresse">Adresse:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[adresse]" id="adresse">
+                        </div>
+                        <div class="form-group">
+                            <label for="mail">Téléphone:</label>
+                            <input type="text" class="form-control form-control-sm" name="newCustomer[tel]" id="tel">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-secondary" id="addNewCutomer">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptfooter %}
+    <script>
+        $(document).ready(function() {
+
+            $(".choicesjsSelect2").select2({
+                placeholder: 'Séléctionner un fournisseur',
+                allowClear: true
+            });
+
+
+            $('#addNewCutomer').click(function () {
+                var form = $('#saleNewCustomer');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('app_distributor_sales_add') }}",
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response == "nok_rs") {
+                            swal("Raison sociale obligatoire", "", "error");
+                        } else {
+                            swal("Fournisseur ajouté", "", "success");
+                            // Create the DOM option that is pre-selected by default
+                            var newState = new Option(response.company, response.id, true, true);
+                            // Append it to the select
+                            $(".choicesjsSelect2").append(newState).trigger('change');
+                            $('#saleNewCustomer').trigger("reset");
+                            $('.button-modal-add-customer').click();
+                        }
+                    },
+                    error: function () {
+                        alert('le champs Raison sociale est obligatoire');
+                    }
+                });
+            });
+
+
+            function onErrorEvent(img) {
+                img.onerror = null;
+                img.src = "data/images/products/default.png";
+
+            }
+
+
+        });
+
+    </script>
+{% endblock  %}
