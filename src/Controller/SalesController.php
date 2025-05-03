@@ -197,7 +197,8 @@ class SalesController extends AbstractController
             $lettersAmount[1] = "ET". $lettersAmount[1]." centimes";
         }
         $data = [
-            'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/assets/images/crm/logo/logo_main.png'),
+            'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/logo_main.png'),
+            'imageSrcNew'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/logo_main_new.png'),
             'sales'         => $sale,
             'paymentMode'         => $paymentMode,
             'amountText'         => strtoupper(str_replace("é","e",utf8_decode("$lettersAmount[0] DIRHAMS"))). strtoupper(str_replace("é","e",utf8_decode($lettersAmount[1]))),
@@ -271,7 +272,8 @@ class SalesController extends AbstractController
             $lettersAmount[1] = "ET". $lettersAmount[1]." centimes";
         }
         $data = [
-            'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/assets/images/crm/logo/logo_main.png'),
+            'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/logo_main.png'),
+            'imageSrcNew'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/logo_main_new.png'),
             'sales'         => $sale,
             'paymentMode'         => $paymentMode,
             'amountText'         => strtoupper(str_replace("é","e",utf8_decode("$lettersAmount[0] DIRHAMS"))). strtoupper(str_replace("é","e",utf8_decode($lettersAmount[1]))),
