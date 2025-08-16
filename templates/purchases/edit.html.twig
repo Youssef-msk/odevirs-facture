@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
    {% block title %}
-{% if app.current_route != "app_purchases_new" %}
+{% if app.current_route == "app_purchase_edit" %}
 Modification/Consultation achat
 {% else %}
     Ajout achat
@@ -20,16 +20,28 @@ Modification/Consultation achat
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="{{ path('app_purchases_index') }}">Achats</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Ajout nouveau achat</li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {% if app.current_route == "app_purchase_edit" %}
+                                            Modification/Consultation achat
+                                        {% else %}
+                                            Ajout achat
+                                        {% endif %}
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
                 </div>
-                {% if app.current_route != "app_purchases_new" %}
+                {% if app.current_route == "app_purchase_edit" %}
                         <div class="col-lg-12 mb-3">
                             <div class="d-flex justify-content-between align-items-end">
-                                <h4 class="font-weight-bold">Nouveau bons de livraison</h4>
+                                <h4 class="font-weight-bold">
+                                    {% if app.current_route == "app_purchase_edit" %}
+                                        Modification/Consultation achat
+                                    {% else %}
+                                        Ajout achat
+                                    {% endif %}
+                                </h4>
 
                                 <a class="btn btn-primary btn-sm" href="{{ path('app_purchases_invoice',{'id':purchase.id}) }}" target="_blank">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,11 +108,158 @@ Modification/Consultation achat
 
                 {{ form_widget(form._token) }}
             </div>
+
+            <div class="card">
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="d-flex justify-content-between align-items-center p-3">
+                            <h5 class="font-weight-bold">Liste des produits</h5>
+                        </li>
+                        <li class="list-group-item p-0">
+                        </li>
+                        <li class="list-group-item p-0">
+                            <div class="table-responsive">
+                                <table class="table data-table-without-options mb-0" id="salesProducts">
+                                    <thead class="table-color-heading">
+                                    <tr class="text-light">
+                                        <th scope="col">
+                                            <label class="text-muted m-0" >Produit</label>
+                                        </th>
+                                        <th scope="col">
+                                            <label class="text-muted mb-0" >Stock physique</label>
+                                        </th>
+                                        <th scope="col" class="text-left">
+                                            <label class="text-muted mb-0" style="min-width:100px;">Prix achat (DH)</label>
+                                        </th>
+                                        <th scope="col" class="text-left" style="min-width:100px;">
+                                            <label class="text-muted mb-0" >Prix revient (DH)</label>
+                                        </th>
+                                        <th scope="col" class="text-left" style="min-width:100px;">
+                                            <label class="text-muted mb-0" >Prix vente TTC (DH)</label>
+                                        </th>
+                                        <th scope="col" class="text-left" style="min-width:100px;">
+                                            <label class="text-muted mb-0" >Prix vente (HT) (DH)</label>
+                                        </th>
+                                        <th scope="col" class="text-left" style="min-width:100px;">
+                                            <label class="text-muted mb-0" >Valeur TAXE (DH)</label>
+                                        </th>
+                                        <th scope="col" class="text-right">
+                                            <span class="text-muted" >Action</span>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="salesProductsBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-end mb-2">
+                                <button class="btn btn-secondary btn-sm addNewProductButton" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke="currentColor" class="mr-1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    Ajouter un produit
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-end mb-2">
+                                TOTAL HT: <p class="ml-2 mb-0" id="sumPriceTotalHtLabel">00,00</p>
+                                <input type="hidden" name="sumPriceTotalHtLabel" class="sumPriceTotalHtLabel" value="0">
+                            </div>
+                            <div class="d-flex justify-content-end mb-2">
+                                Montant NET TTC (MAD) : <p class="ml-2 mb-0 font-weight-bold" id="sumPriceTotalTtcLabel">00,00</p>
+                                <input type="hidden" name="sumPriceTotalTtcLabel" class="sumPriceTotalTtcLabel" value="0">
+                            </div>
+                        </li>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
+                            <div class="flex align-items-start flex-column">
+                                <h6>Notes</h6>
+                                <p class="mb-0 my-2" style="color: red">Une fois que vous avez apporté les modifications nécessaires aux lignes de l'article,<br> n'oubliez pas de cliquer sur le bouton "Enregistrer" pour les appliquer.</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-secondary px-4" disabled>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                    </svg>
+                                    Imprimer
+                                </button>
+                                <button class="btn btn-primary px-4" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
+                                    </svg>
+                                    Sauvegarder
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: none">
+
+                            <input type="text" name="newProductRowData[idSelectedProduct]" id="idSelectedProduct" class="idSelectedProduct" value="0">
+                            <input type="text" id="isSelectedNewProduct" class="isSelectedProduct" value="0">
+                            <input type="number" name="newProductRowData[newProductQuantity]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductQuantity" placeholder="Quantity">
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductPriceHt]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductPriceHt" placeholder="Prix HT">
+                            <input type="text" name="newProductRowData[newProductPriceTotalHt]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductPriceTotalHt" placeholder="Prix HT">
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductTaxe]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductTaxe" placeholder="Taxe">
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductRateType]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductRateType" placeholder="Taxe Type">
+                            <input type="text" name="newProductRowData[newProductPriceTtc]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductPriceTtc" placeholder="Taxe">
+                            <input type="text" readonly="readonly" name="newProductRowData[newProductPriceTotalTtc]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductPriceTotalTtc" placeholder="Prix Total TTC">
+                        </div>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
     {{ form_end(form, {'render_rest': false}) }}
+<table   style="display: none">
+    <tbody class="newProductTemplate">
+       <tr class="white-space-no-wrap odd"  data-productRow="uniqueLineId">
+       <td class=""  style="min-width: 300px">
+           <div class="active-project-1 d-flex align-items-center mt-0 ">
+               <div class="data-content">
+                   <div>
+                       <input type="text" name="dataSalesProducts[uniqueLineId][nameCommerciale]" required="required" maxlength="255" class="form-control" placeholder="Designation commerciale">
+                   </div>
+                   <p class="m-0 mt-1">
+                       <input type="text" name="dataSalesProducts[uniqueLineId][brand]" required="required" maxlength="255" class="form-control" placeholder="Marque">
+                   </p>
+                   <input type="hidden" name="dataSalesProducts[uniqueLineId][id]" value="new" >
+               </div>
+           </div>
+       </td>
+        <td>
+            <input type="number"  name="dataSalesProducts[uniqueLineId][quantity]" required="required" class="form-control form-control-sm" placeholder="Quantity" value="0">
+        </td>
+        <td>
+            <input type="number" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][pricePurchase]" class="form-control form-control-sm" placeholder="Prix achat" value="0">
+        </td>
+        <td>
+            <input type="number" inputmode="decimal" step="0.01" required="required"  name="dataSalesProducts[uniqueLineId][priceRevient]" class="form-control form-control-sm" placeholder="Prix revient (DH)"  value="0">
+        </td>
+        <td>
+            <input type="number" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][price]" class="form-control form-control-sm products_price" placeholder="Prix TTC" value="0">
+        </td>
 
+        <td class="text-left">
+            <input type="number" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][priceHt]" class="form-control form-control-sm" placeholder="Prix HT" value="">
+        </td>
+        <td class="text-left">
+            <input type="number" inputmode="decimal" step="0.01" readonly name="dataSalesProducts[uniqueLineId][taxe]" class="form-control form-control-sm" placeholder="TVA" value="">
+        </td>
+        <td>
+            <div class="d-flex justify-content-end align-items-center">
+                <a class="badge bg-danger delete-confirm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </a>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
     <div class="modal fade modal-add-customer" tabindex="-1" role="dialog"  aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -141,13 +300,67 @@ Modification/Consultation achat
 
 {% block javascriptfooter %}
     <script>
+        function generateUniqueId() {
+            // Get current timestamp (milliseconds since epoch)
+            const timestamp = Date.now();
+            // Generate a random number
+            const randomNumber = Math.floor(Math.random() * 1000000); // Adjust range as needed
+            // Combine them to create a unique ID
+            return `temp_${timestamp}_${randomNumber}`;
+        }
+
         $(document).ready(function() {
+
+            $('.products_price').on('change',function(){
+                calculatePricesFromTaxe()
+            });
+
+            $('.products_price').on('keyup',function(){
+                calculatePricesFromTaxe()
+            });
+
+
+            function calculatePricesFromTaxe(){
+                var rateValue =  $('#products_rateType').val();
+
+                if(rateValue == "default_taxe"){
+                    var newPriceTTc =  $('#products_price').val();
+                    var newRate  =  ($('#products_price').val() / 1.2) * 0.2;
+                    var newPriceHt = (newPriceTTc - newRate);
+                    $('#products_rate').val((newPriceTTc - newPriceHt).toFixed(2));
+                    $('#products_priceHt').val(newPriceHt.toFixed(2));
+                }else {
+                    var priceTTC = $('#products_price').val(); // Price including tax
+                    var vatRate = parseInt(rateValue) / 100; // 20% VAT rate
+                    $('#products_rate').val((priceTTC - calculatePriceExcludingTax(priceTTC, vatRate)).toFixed(2));
+                    $('#products_priceHt').val(calculatePriceExcludingTax(priceTTC, vatRate));
+                }
+            }
+
+            function calculatePriceExcludingTax(priceTTC, vatRate) {
+                var priceHT = priceTTC / (1 + vatRate);
+                return priceHT.toFixed(2); // Round the result to 2 decimal places
+            }
 
             $(".choicesjsSelect2").select2({
                 placeholder: 'Séléctionner un fournisseur',
                 allowClear: true
             });
 
+            $(document).on('click', '.delete-confirm', function(){
+                var row = $(this).closest('tr'); // Get the parent row
+                row.remove(); // Remove the row
+            });
+
+            $(document).on('click', '.addNewProductButton', function(){
+                var uniqueLineId = generateUniqueId();
+
+                console.log($(".newProductTemplate").html())
+                var row = $(".newProductTemplate").html().replace('/uniqueLineId/g', uniqueLineId); // Get the parent row
+                console.log(row)
+                var destinationTableBody = $('#salesProductsBody');  // Target the destination table's tbody
+                destinationTableBody.append(row); // Append the row to the destination table
+            });
 
             $('#addNewCutomer').click(function () {
                 var form = $('#saleNewCustomer');
