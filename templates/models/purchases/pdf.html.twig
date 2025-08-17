@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Facture</title>
+</head>
+<style>
+    .header {
+        position: fixed;
+        top: 0;
+    }
+    .footer {
+        position: fixed;
+        bottom: 0;
+    }
+    @page {
+        margin: 20px !important;
+        padding: 0 !important;
+    }
+</style>
+<body style="font-family: Verdana,sans-serif">
+<div class="header">
+    <table style="height: 56px;" border="0" width="569" cellspacing="0" cellpadding="0">
+        <tbody>
+        <tr style="height: 28px;">
+            <td style="width: 198.266px; height: 56.5px;" colspan="3" rowspan="2">
+                <img src="{{ imageSrc }}" width="350px">
+            </td>
+            <td style="width: 92.4219px; height: 28px;">&nbsp;</td>
+            <td style="width: 92.4219px; height: 28px;">&nbsp;</td>
+            <td style="width: 92.4219px; height: 28px;">&nbsp;</td>
+
+            <td style="width: 198.266px; height: 100px;" colspan="2" rowspan="2">
+                <img src="{{ imageSrcNew }}" width="170px">
+            </td>
+        </tr>
+        <tr style="height: 28.5px;">
+            <td style="width: 92.4219px; height: 28.5px;">&nbsp;</td>
+            <td style="width: 92.4219px; height: 28.5px;">&nbsp;</td>
+            <td style="width: 92.4219px; height: 28.5px;">&nbsp;</td>
+            <td style="width: 92.4688px; height: 28.5px;">&nbsp;</td>
+        </tr>
+        </tbody>
+    </table>
+</div><br><br><br><br><br>
+<div class="content">
+    <table style="height: 230px;" width="571">
+        <tbody>
+        <tr>
+            <td style="width: 326.875px;font-size: 25px;" colspan="4"><strong>{{ "Bon de livraison"|upper }}</strong></td>
+            <td style="width: 80.9688px;">&nbsp;</td>
+            <td style="width: 80.9688px;">&nbsp;</td>
+            <td style="width: 81.1875px;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 326.875px;" colspan="4"> Liste Achat N° :&nbsp;{{ purchases.reference }}</td>
+            <td style="width: 243.125px;" colspan="3">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 326.875px;" colspan="4">Date : {{ purchases.createdAt|date('d/m/Y') }}</td>
+            <td style="width: 243.125px;" colspan="3">Fournisseur :{{ purchases.distributor.company }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<table style="height: 150px; width: 700px; border-color: black;border-radius: 7px;border-collapse: collapse;border: 1px" border="1" cellpadding="5>
+    <tbody>
+    <tr style="height: px;">
+        <td style="width: 62px; height: 21.4688px; background-color: #2f5496; text-align: center; vertical-align: middle;color: white;">&nbsp;R&eacute;f&eacute;rence</td>
+        <td style="width: 200px; height: 21.4688px; background-color: #2f5496; text-align: center; vertical-align: middle;color: white;">DESIGNATION</td>
+        <td style="width: 71px; height: 21.4688px; background-color: #2f5496; text-align: center; vertical-align: middle;color: white;">&nbsp;MARQUE</td>
+        <td style="width: 54.1562px; height: 21.4688px; background-color: #2f5496; text-align: center; vertical-align: middle;color: white">&nbsp;QTE</td>
+        <td style="width: 90px; height: 21.4688px; background-color: #2f5496; text-align: center; vertical-align: middle;color: white">&nbsp;PU HT</td>
+        <td style="width: 90px; height: 21.4688px; background-color: #2f5496; text-align: center; vertical-align: middle;color: white">&nbsp;PU TTC</td>
+    </tr>
+    {% for product in purchasesProducts %}
+        <tr style="height: 21px;">
+            <td style="width: 62px; height: 21px;border-collapse: collapse;border-color: black;text-align: center;">{{ product.ref }}</td>
+            <td style="width: 250px; height: 21px;border-collapse: collapse;border-color: black;padding-left: 5px">{{ product.name|capitalize }}</td>
+            <td style="width: 71px; height: 21px;border-collapse: collapse;border-color: black;text-align: center;">{{ product.brand|upper }}</td>
+            <td style="width: 54.1562px; height: 21px;border-collapse: collapse;border-color: black;vertical-align: middle;text-align: center;">{{ product.quantity }}</td>
+            <td style="width: 90px; height: 21px;border-collapse: collapse;border-color: black;text-align: right;padding-right: 5px">{{ product.priceHt|number_format(2, ',',' ') }}</td>
+            <td style="width: 90px; height: 21px;border-collapse: collapse;border-color: black;text-align: right;padding-right: 5px">{{ product.price|number_format(2, ',',' ') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<table style="height: 52px; width: 750px;">
+    <tbody>
+    <tr style="height: 25px;">
+        <td style="width: 402.859px; height: 25px;" colspan="4">&nbsp;</td>
+        <td style="width: 185.5px; height: 25px;text-align: right;">TOTAL HT :</td>
+        <td style="width: 140.5px; height: 25px; text-align: right;">{{ purchases.amoutTotalHt|number_format(2, ',',' ') }} DH</td>
+    </tr>
+    <tr style="height: 25px;">
+        <td style="width: 387.859px; height: 25px;" colspan="4">ARRETE LA PRESENTE FACTURE A LA SOMME DE:</td>
+        <td style="width: 185.5px; height: 25px;text-align: right;">Montant NET TTC (MAD):</td>
+        <td style="width: 140.5px; height: 25px; text-align: right;">{{ purchases.amountTotalTtc|number_format(2, ',',' ') }} DH</td>
+    </tr>
+    <tr style="height: 25px;">
+        <td style="width: 402.859px; height: 25px;" colspan="6">{{ amountText|lower }} toutes taxes comprises.</td>
+    </tr>
+    </tbody>
+</table>
+<div class="footer" >
+    <table style="height: 47px;border-collapse: collapse;" width="571" cellspacing="5" cellpadding="6">
+        <tbody>
+        <tr style="border-bottom: 1pt solid yellowgreen;">
+            <td style="width: 570px; text-align: left; vertical-align: middle;">
+                <p><strong>MODE DE PAIEMENT :</strong></p>
+                <p>{{ paymentMode[purchases.paymentMode] }} : {{ (purchases.paymentMode == "2" or purchases.paymentMode == "1") ? purchases.paymentReference : "" }} </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 570px; text-align: center; vertical-align: middle;">
+                <p>37, Lot ANNAKHIL ESC G4 ETG MA N&deg;6 -Casablanca &ndash; T&eacute;l :212664703721</p>
+                <p>E-mail :Odivers.ma@gmail.com R.C : 550961 - I.F : 52569878 - C.N.S.S : 4108063 - T.P : 33008709 - I.C.E : 003111969000080</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

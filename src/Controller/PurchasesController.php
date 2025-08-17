@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Products;
 use App\Entity\Purchases;
+use App\Entity\Sales;
+use App\Entity\SalesProducts;
 use App\Form\PurchasesType;
 use App\Repository\ProductsRepository;
 use App\Repository\PurchasesRepository;
@@ -61,32 +64,31 @@ class PurchasesController extends AbstractController
         $purchases->setReference($purchasesReference);
 
         $data = $request->request->all();
-        $productListToAdd = isset($data["dataPurchasesProducts"]) ? $data["dataPurchasesProducts"] : [];
 
         $form = $this->createForm(PurchasesType::class, $purchases,["edit" => false]);
         $form->handleRequest($request);
+        $productListToManage = $data["dataSalesProducts"] ?? [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $dateString = $data["purchaseDate"];
             $format = 'Y-m-d';
             $dateTime = DateTimeImmutable::createFromFormat($format, $dateString);
             $purchases->setCreatedAt($dateTime);
-
+            $purchases->setAmoutTotalHt(0);
+            $purchases->setAmountTotalTtc(0);
             $purchases->setUpdatedAt(new \DateTimeImmutable());
             $purchases->setEnabled(1);
             $purchases->setDeleted(0);
 
             $purchasesRepository->save($purchases, true);
 
-            //insertProducts
-            //$this->updateProductsFromRequest($purchases,$productListToAdd);
             return $this->redirectToRoute('app_purchase_edit', ["id" => $purchases->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('purchases/edit.html.twig', [
             'purchase' => $purchases,
             'currentDate' => $currentDate,
+            'products' => [],
             'form' => $form,
         ]);
     }
@@ -98,8 +100,9 @@ class PurchasesController extends AbstractController
         $form->handleRequest($request);
         $data = $request->request->all();
 
-        $productListToAdd = isset($data["dataPurchasesProducts"]) ? $data["dataPurchasesProducts"] : [];
-
+        $productListToManage = $data["dataSalesProducts"] ?? [];
+        $dataSalesProductsAmounts = $data["dataSalesProductsAmounts"] ?? [];
+        $productList = $this->productsRepository->findBy(["purchases" => $purchases], ["id" => "ASC"]);
         if ($form->isSubmitted() && $form->isValid()) {
             $purchases->setUpdatedAt(new \DateTimeImmutable());
             $dateString = $data["purchaseDate"];
@@ -107,19 +110,22 @@ class PurchasesController extends AbstractController
 
             $dateTime = DateTimeImmutable::createFromFormat($format, $dateString);
             $purchases->setCreatedAt($dateTime);
+            $purchases->setAmoutTotalHt(floatval(str_replace(",",".",$dataSalesProductsAmounts["sumPriceTotalHtLabel"])));
+            $purchases->setAmountTotalTtc(floatval(str_replace(",",".",$dataSalesProductsAmounts["sumPriceTotalTtcLabel"])));
 
             $purchasesRepository->save($purchases, true);
 
             //delete prev products
-            //$this->deleteProductsSles($sale);
+            $this->deleteProductsPurchase($purchases);
             //insertProducts
-            //$this->updateProductsFromRequest($sale,$productListToAdd,true);
+            $this->updateProductsFromRequest($purchases,$productListToManage,true);
 
             return $this->redirectToRoute('app_purchase_edit', ["id" => $purchases->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('purchases/edit.html.twig', [
             'purchase' => $purchases,
+            'products' => $productList,
             'form' => $form,
         ]);
     }
@@ -128,7 +134,68 @@ class PurchasesController extends AbstractController
     #[Route('/{id}/print', name: 'app_purchases_invoice', methods: ['GET', 'POST'])]
     public function print(Request $request,Purchases $purchases ,PurchasesRepository $purchasesRepository): Response
     {
+        $paymentMode = [
+            '3' => 'Espèce',
+            '1' => 'Chèque',
+            '2' => 'Effet',
+            '4' => 'Autre',
+        ];
 
+        $lettersAmount = $this->NumberToLetter($purchases->getAmountTotalTtc());
+        if ($lettersAmount[1] == "zÃ©ro"){
+            $lettersAmount[1] = "";
+        }else{
+            $lettersAmount[1] = "ET". $lettersAmount[1]." centimes";
+        }
+        $data = [
+            'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/logo_main.png'),
+            'imageSrcNew'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/logo_main_new.png'),
+            'purchases'         => $purchases,
+            'purchasesProducts'         => $this->productsRepository->findBy(["purchases" => $purchases], ["id" => "ASC"]),
+            'paymentMode'         => $paymentMode,
+            'amountText'         => strtoupper(str_replace("é","e",utf8_decode("$lettersAmount[0] DIRHAMS"))). strtoupper(str_replace("é","e",utf8_decode($lettersAmount[1]))),
+        ];
+        $html =  $this->renderView('models/purchases/pdf.html.twig', $data);
+
+        $dompdf = new Dompdf();
+        $options = new Options([
+            'isPhpEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'defaultFont' => 'Arial',
+            'defaultPaperSize' => 'A4',
+            'defaultPaperOrientation' => 'portrait',
+            'margin_top' => 0,
+            'margin_right' => 0,
+            'margin_bottom' => 0,
+            'margin_left' => 100000000,
+        ]);
+
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setOptions($options);
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+
+        // Get the generated PDF content
+        $output = $dompdf->output();
+
+// Choose a file path to save the PDF
+        $basePath = $this->getParameter('kernel.project_dir') . '/public/';
+
+        $filePath = $basePath.'/data/file.pdf';
+
+// Save the PDF file
+        file_put_contents($filePath, $output);
+
+        // Create a BinaryFileResponse with the PDF file path
+        $response = new BinaryFileResponse($filePath);
+
+// Set the desired response headers
+        $response->headers->set('Content-Type', 'application/pdf');
+        $fileNameDawnload = 'Liste Achat N°'.$purchases->getReference().'.pdf';
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$fileNameDawnload);
+
+// Return the BinaryFileResponse
+        return $response;
     }
 
 
@@ -140,6 +207,46 @@ class PurchasesController extends AbstractController
         return $base64;
     }
 
+    private function updateProductsFromRequest(Purchases $purchases,$productListToManage)
+    {
+        if (!empty($productListToManage) and is_array($productListToManage) and count($productListToManage)){
+            foreach ($productListToManage as $productId => $productData){
+                if(!str_contains($productId, "temp_")){
+                    $productItem =  $this->productsRepository->find($productId);
+                }else{
+                    //max refs
+                    $count =  $this->productsRepository->createQueryBuilder('e')
+                        ->select('MAX(e.id)')
+                        ->getQuery()
+                        ->getSingleScalarResult();
+                    $productItem = new Products();
+                    $productItem->setRef("OD-".$count + 1000 + 1);
+
+                }
+
+                $productItem->setPurchases($purchases);
+                $productItem->setEnabled(true);
+                $productItem->setDeleted(false);
+                $productItem->setUpdatedAt(new DateTimeImmutable());
+                $productItem->setCreatedAt(new DateTimeImmutable());
+                $productItem->setDistributor($purchases->getDistributor());
+
+                $productItem->setName($productData["nameCommerciale"]);
+                $productItem->setNameCommerciale($productData["nameCommerciale"]);
+                $productItem->setPrice($productData["price"]);
+                $productItem->setPriceHt($productData["priceHt"]);
+                $productItem->setPriceReduced($productData["pricePurchase"]);
+                $productItem->setQuantity($productData["quantity"]);
+                $productItem->setBrand($productData["brand"]);
+                $productItem->setDescription("");
+                $productItem->setRate(0);
+                $productItem->setRateType("default_taxe");
+                $productItem->setPriceRevient($productData["priceRevient"]);
+
+                $this->productsRepository->save($productItem,true);
+            }
+        }
+    }
 
    
 
@@ -593,5 +700,16 @@ class PurchasesController extends AbstractController
         }
     }
 
+    private function deleteProductsPurchase(Purchases $purchase): bool
+    {
+        $salesProducts = $this->productsRepository->findBy(["purchases" => $purchase]);
+        foreach ($salesProducts as $product){
+            $product->setPurchases(null);
+
+            $this->productsRepository->save($product);
+        }
+
+        return true;
+    }
 
 }

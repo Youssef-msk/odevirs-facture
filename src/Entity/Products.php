@@ -92,6 +92,9 @@ class Products
     #[ORM\Column]
     private ?float $priceRevient = null;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Purchases $purchases = null;
+
 
     public function __construct()
     {
@@ -398,6 +401,18 @@ class Products
     public function setDeliveryNoteProducts(ArrayCollection|Collection $deliveryNoteProducts): void
     {
         $this->deliveryNoteProducts = $deliveryNoteProducts;
+    }
+
+    public function getPurchases(): ?Purchases
+    {
+        return $this->purchases;
+    }
+
+    public function setPurchases(?Purchases $purchases): static
+    {
+        $this->purchases = $purchases;
+
+        return $this;
     }
 
 

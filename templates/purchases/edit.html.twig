@@ -108,8 +108,8 @@ Modification/Consultation achat
 
                 {{ form_widget(form._token) }}
             </div>
-
-            <div class="card">
+            {% if app.current_route == "app_purchase_edit" %}
+              <div class="card">
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
                         <li class="d-flex justify-content-between align-items-center p-3">
@@ -140,16 +140,60 @@ Modification/Consultation achat
                                         <th scope="col" class="text-left" style="min-width:100px;">
                                             <label class="text-muted mb-0" >Prix vente (HT) (DH)</label>
                                         </th>
-                                        <th scope="col" class="text-left" style="min-width:100px;">
-                                            <label class="text-muted mb-0" >Valeur TAXE (DH)</label>
-                                        </th>
                                         <th scope="col" class="text-right">
                                             <span class="text-muted" >Action</span>
                                         </th>
                                     </tr>
                                     </thead>
                                     <tbody id="salesProductsBody">
+                                           {% for product in products %}
+                                               <tr class="white-space-no-wrap odd productRow{{ product.id }}"  data-productRow="{{ product.id }}">
+                                                   <td class=""  style="min-width: 300px">
+                                                       <div class="active-project-1 d-flex align-items-center mt-0 ">
+                                                           <div class="data-content">
+                                                               <div>
+                                                                   <input type="text" name="dataSalesProducts[{{ product.id }}][nameCommerciale]" required="required" maxlength="255" class="form-control" placeholder="Designation commerciale" value="{{ product.nameCommerciale }}">
+                                                               </div>
+                                                               <p class="m-0 mt-1">
+                                                                   <input type="text" name="dataSalesProducts[{{ product.id }}][brand]" required="required" maxlength="255" class="form-control" placeholder="Marque" value="{{ product.brand }}">
+                                                               </p>
+                                                           </div>
+                                                       </div>
+                                                   </td>
+                                                   <td>
+                                                       <input type="number" onchange="calculateQuantityTrigger({{ product.id }})" onkeyup="calculateQuantityTrigger({{ product.id }})" onkeydown="calculateQuantityTrigger({{ product.id }})"  name="dataSalesProducts[{{ product.id }}][quantity]" required="required" class="form-control form-control-sm" placeholder="Quantity" value="{{ product.quantity }}">
+                                                   </td>
+                                                   <td>
+                                                       <input type="number"  inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[{{ product.id }}][pricePurchase]" class="form-control form-control-sm" placeholder="Prix achat" value="{{ product.priceReduced }}">
+                                                   </td>
+                                                   <td>
+                                                       <input type="number" inputmode="decimal" step="0.01" required="required"  name="dataSalesProducts[{{ product.id }}][priceRevient]" class="form-control form-control-sm" placeholder="Prix revient (DH)"  value="{{ product.priceRevient }}">
+                                                   </td>
+                                                   <td>
+                                                       <input type="number" onchange="calculateQuantityTrigger({{ product.id }})" onkeyup="calculateQuantityTrigger({{ product.id }})" onkeydown="calculateQuantityTrigger({{ product.id }})" id="price{{ product.id }}" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[{{ product.id }}][price]" class="form-control form-control-sm products_price" placeholder="Prix TTC" value="{{ product.price }}">
+                                                   </td>
 
+                                                   <td class="text-left">
+                                                       <input type="number"  readonly inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[{{ product.id }}][priceHt]" class="form-control form-control-sm" placeholder="Prix HT" value="{{ product.priceHt }}">
+                                                   </td>
+                                                   <td>
+                                                       <div class="d-flex justify-content-end align-items-center">
+                                                           <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Voir" href="{{ path('app_products_edit', {'id': product.id,'show':1}) }}">
+                                                               <svg xmlns="http://www.w3.org/2000/svg" class="text-secondary" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                               </svg>
+                                                           </a>
+
+                                                           <a style="margin-left: 10px;" class="badge bg-danger " href="#" onclick="deleteProductRow({{ product.id }})" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="#">
+                                                               <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                               </svg>
+                                                           </a>
+                                                       </div>
+                                                   </td>
+                                               </tr>
+                                           {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
@@ -165,11 +209,11 @@ Modification/Consultation achat
                             </div>
                             <div class="d-flex justify-content-end mb-2">
                                 TOTAL HT: <p class="ml-2 mb-0" id="sumPriceTotalHtLabel">00,00</p>
-                                <input type="hidden" name="sumPriceTotalHtLabel" class="sumPriceTotalHtLabel" value="0">
+                                <input type="hidden" name="dataSalesProductsAmounts[sumPriceTotalHtLabel]" class="sumPriceTotalHtLabel" value="0">
                             </div>
                             <div class="d-flex justify-content-end mb-2">
                                 Montant NET TTC (MAD) : <p class="ml-2 mb-0 font-weight-bold" id="sumPriceTotalTtcLabel">00,00</p>
-                                <input type="hidden" name="sumPriceTotalTtcLabel" class="sumPriceTotalTtcLabel" value="0">
+                                <input type="hidden" name="dataSalesProductsAmounts[sumPriceTotalTtcLabel]" class="sumPriceTotalTtcLabel" value="0">
                             </div>
                         </li>
                         <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
@@ -192,29 +236,17 @@ Modification/Consultation achat
                                 </button>
                             </div>
                         </div>
-                        
-                        <div style="display: none">
-
-                            <input type="text" name="newProductRowData[idSelectedProduct]" id="idSelectedProduct" class="idSelectedProduct" value="0">
-                            <input type="text" id="isSelectedNewProduct" class="isSelectedProduct" value="0">
-                            <input type="number" name="newProductRowData[newProductQuantity]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductQuantity" placeholder="Quantity">
-                            <input type="text" readonly="readonly" name="newProductRowData[newProductPriceHt]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductPriceHt" placeholder="Prix HT">
-                            <input type="text" name="newProductRowData[newProductPriceTotalHt]" class="form-control form-control-sm triggerCalculateNewLigne" id="newProductPriceTotalHt" placeholder="Prix HT">
-                            <input type="text" readonly="readonly" name="newProductRowData[newProductTaxe]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductTaxe" placeholder="Taxe">
-                            <input type="text" readonly="readonly" name="newProductRowData[newProductRateType]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductRateType" placeholder="Taxe Type">
-                            <input type="text" name="newProductRowData[newProductPriceTtc]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductPriceTtc" placeholder="Taxe">
-                            <input type="text" readonly="readonly" name="newProductRowData[newProductPriceTotalTtc]" class="form-control form-control-sm triggerCalculateNewLigne"  id="newProductPriceTotalTtc" placeholder="Prix Total TTC">
-                        </div>
                     </ul>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 
     {{ form_end(form, {'render_rest': false}) }}
 <table   style="display: none">
     <tbody class="newProductTemplate">
-       <tr class="white-space-no-wrap odd"  data-productRow="uniqueLineId">
+       <tr class="white-space-no-wrap odd productRowuniqueLineId"  data-productRow="uniqueLineId">
        <td class=""  style="min-width: 300px">
            <div class="active-project-1 d-flex align-items-center mt-0 ">
                <div class="data-content">
@@ -229,7 +261,7 @@ Modification/Consultation achat
            </div>
        </td>
         <td>
-            <input type="number"  name="dataSalesProducts[uniqueLineId][quantity]" required="required" class="form-control form-control-sm" placeholder="Quantity" value="0">
+            <input type="number" onchange="calculateQuantityTrigger('uniqueLineId')" onkeyup="calculateQuantityTrigger('uniqueLineId')" onkeydown="calculateQuantityTrigger('uniqueLineId')"  name="dataSalesProducts[uniqueLineId][quantity]" required="required" class="form-control form-control-sm" placeholder="Quantity" value="0">
         </td>
         <td>
             <input type="number" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][pricePurchase]" class="form-control form-control-sm" placeholder="Prix achat" value="0">
@@ -238,18 +270,15 @@ Modification/Consultation achat
             <input type="number" inputmode="decimal" step="0.01" required="required"  name="dataSalesProducts[uniqueLineId][priceRevient]" class="form-control form-control-sm" placeholder="Prix revient (DH)"  value="0">
         </td>
         <td>
-            <input type="number" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][price]" class="form-control form-control-sm products_price" placeholder="Prix TTC" value="0">
+            <input onchange="calculateQuantityTrigger('uniqueLineId')" onkeyup="calculateQuantityTrigger('uniqueLineId')" onkeydown="calculateQuantityTrigger('uniqueLineId')" type="number" id="priceuniqueLineId" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][price]" class="form-control form-control-sm products_price" placeholder="Prix TTC" value="0">
         </td>
 
         <td class="text-left">
-            <input type="number" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][priceHt]" class="form-control form-control-sm" placeholder="Prix HT" value="">
-        </td>
-        <td class="text-left">
-            <input type="number" inputmode="decimal" step="0.01" readonly name="dataSalesProducts[uniqueLineId][taxe]" class="form-control form-control-sm" placeholder="TVA" value="">
+            <input  type="number" readonly id="priceHtuniqueLineId" inputmode="decimal" step="0.01" required="required" name="dataSalesProducts[uniqueLineId][priceHt]" class="form-control form-control-sm" placeholder="Prix HT" value="">
         </td>
         <td>
             <div class="d-flex justify-content-end align-items-center">
-                <a class="badge bg-danger delete-confirm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="">
+                <a class="badge bg-danger " href="#" onclick="deleteProductRow('uniqueLineId')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
@@ -309,7 +338,74 @@ Modification/Consultation achat
             return `temp_${timestamp}_${randomNumber}`;
         }
 
+        function deleteProductRow(productId){
+            var elementProductRow = "productRow"+productId+"";
+            var $productRow = $("." + elementProductRow + "");
+            $productRow.remove();
+
+            calculateSumFooterElements();
+
+        }
+
+        function calculateQuantityTrigger(productId){
+
+            var elementnewProductPriceTtc = "dataSalesProducts["+productId+"][price]";
+            var $newProductPriceTtc = $("[name='" + elementnewProductPriceTtc + "']");
+
+
+            var newPriceTTc =  (parseFloat($newProductPriceTtc.val().replace(/,/g, ".")));
+            var newRate  =  (newPriceTTc / 1.2) * 0.2;
+            var newPriceHt = (newPriceTTc - newRate);
+
+            console.log(newPriceHt.toFixed(2).toString().replace(".",","))
+            var elementnewpriceHt = "dataSalesProducts["+productId+"][priceHt]";
+            var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
+            $newProductelementnewpriceHt.val(newPriceHt.toFixed(2));
+
+
+           calculateSumFooterElements();
+
+        }
+
+        function calculateSumFooterElements() {
+
+            var sumPriceTotalTtc = 0;
+            $('.products_price').each(function () {
+                var value = parseFloat($(this).val().replace(/,/g, "."));
+                if (!isNaN(value)) {
+                    sumPriceTotalTtc += value;
+                }
+            });
+
+            if (sumPriceTotalTtc > 0) {
+                $("#sumPriceTotalTtcLabel").html(sumPriceTotalTtc.toFixed(2).toString().replace(".", ","));
+                $(".sumPriceTotalTtcLabel").val(sumPriceTotalTtc.toFixed(2).toString().replace(".", ","));
+
+                var newPriceTTc = (parseFloat($(".sumPriceTotalTtcLabel").val().replace(/,/g, ".")));
+                var newRate = (newPriceTTc / 1.2) * 0.2;
+                var newPriceHt = (newPriceTTc - newRate);
+
+                $("#sumPriceTotalHtLabel").html(newPriceHt.toFixed(2).toString().replace(".", ","));
+                $(".sumPriceTotalHtLabel").val(newPriceHt.toFixed(2).toString().replace(".", ","));
+
+                $("#sumTotalTaxeLabel").html(newRate.toFixed(2).toString().replace(".", ","));
+                $(".sumTotalTaxeLabel").val(newRate.toFixed(2).toString().replace(".", ","));
+            } else {
+                $("#sumPriceTotalTtcLabel").html("00,00");
+                $(".sumPriceTotalTtcLabel").val("00,00");
+
+                $("#sumPriceTotalHtLabel").html("00,00");
+                $(".sumPriceTotalHtLabel").val("00,00");
+
+                $("#sumTotalTaxeLabel").html("00,00");
+                $(".sumTotalTaxeLabel").val("00,00");
+            }
+        }
+
         $(document).ready(function() {
+
+
+            calculateSumFooterElements();
 
             $('.products_price').on('change',function(){
                 calculatePricesFromTaxe()
@@ -347,17 +443,14 @@ Modification/Consultation achat
                 allowClear: true
             });
 
-            $(document).on('click', '.delete-confirm', function(){
-                var row = $(this).closest('tr'); // Get the parent row
-                row.remove(); // Remove the row
-            });
+
+
 
             $(document).on('click', '.addNewProductButton', function(){
                 var uniqueLineId = generateUniqueId();
 
-                console.log($(".newProductTemplate").html())
-                var row = $(".newProductTemplate").html().replace('/uniqueLineId/g', uniqueLineId); // Get the parent row
-                console.log(row)
+                var row = $(".newProductTemplate").html().replaceAll('uniqueLineId', uniqueLineId); // Get the parent row
+                console.log(uniqueLineId,row)
                 var destinationTableBody = $('#salesProductsBody');  // Target the destination table's tbody
                 destinationTableBody.append(row); // Append the row to the destination table
             });

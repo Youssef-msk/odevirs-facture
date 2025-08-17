@@ -39,6 +39,21 @@ class Purchases
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $paymentReference = null;
 
+    #[ORM\OneToMany(mappedBy: 'purchases', targetEntity: Products::class)]
+    private Collection $products;
+
+    #[ORM\Column]
+    private ?float $amoutTotalHt = null;
+
+    #[ORM\Column]
+    private ?float $amountTotalTtc = null;
+
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
+
 
 
     public function getId(): ?int
@@ -101,6 +116,56 @@ class Purchases
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;
+    }
+
+    /**
+     * @return Collection<int, Products>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Products $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setPurchases($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Products $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getPurchases() === $this) {
+                $product->setPurchases(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAmoutTotalHt(): ?float
+    {
+        return $this->amoutTotalHt;
+    }
+
+    public function setAmoutTotalHt(?float $amoutTotalHt): void
+    {
+        $this->amoutTotalHt = $amoutTotalHt;
+    }
+
+    public function getAmountTotalTtc(): ?float
+    {
+        return $this->amountTotalTtc;
+    }
+
+    public function setAmountTotalTtc(?float $amountTotalTtc): void
+    {
+        $this->amountTotalTtc = $amountTotalTtc;
     }
 
 
