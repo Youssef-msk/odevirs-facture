@@ -5,44 +5,24 @@
     <title>Facture</title>
 </head>
 <style>
-    .header {
-        position: fixed;
-        top: 0;
-    }
-    .footer {
-        position: fixed;
-        bottom: 0;
-    }
     @page {
-        margin: 20px !important;
+        margin: 10px !important;
         padding: 0 !important;
     }
 </style>
 <body style="font-family: Verdana,sans-serif">
-<div class="header">
-    <table style="height: 56px;" border="0" width="569" cellspacing="0" cellpadding="0">
+<div class="pdf-header" style="display: flex;align-items: center;border-bottom: 2px solid #000;font-family: Arial, sans-serif;">
+    <table style="height: 56px;" border="0"  cellspacing="0" cellpadding="0">
         <tbody>
-        <tr style="height: 28px;">
-            <td style="width: 198.266px; height: 56.5px;" colspan="3" rowspan="2">
-                <img src="{{ imageSrc }}" width="350px">
+        <tr>
+            <td>
+                <img src="{{ pdf_frame }}" width="auto">
             </td>
-            <td style="width: 92.4219px; height: 28px;">&nbsp;</td>
-            <td style="width: 92.4219px; height: 28px;">&nbsp;</td>
-            <td style="width: 92.4219px; height: 28px;">&nbsp;</td>
-
-            <td style="width: 198.266px; height: 100px;" colspan="2" rowspan="2">
-                <img src="{{ imageSrcNew }}" width="170px">
-            </td>
-        </tr>
-        <tr style="height: 28.5px;">
-            <td style="width: 92.4219px; height: 28.5px;">&nbsp;</td>
-            <td style="width: 92.4219px; height: 28.5px;">&nbsp;</td>
-            <td style="width: 92.4219px; height: 28.5px;">&nbsp;</td>
-            <td style="width: 92.4688px; height: 28.5px;">&nbsp;</td>
         </tr>
         </tbody>
     </table>
-</div><br><br><br><br><br>
+</div>
+
 <div class="content">
     <table style="height: 230px;" width="571">
         <tbody>
@@ -133,7 +113,7 @@
     </tr>
     </tbody>
 </table>
-<div class="footer" >
+<div class="footer" style="position: fixed;bottom: 0;">
     <table style="height: 47px;border-collapse: collapse;" width="571" cellspacing="5" cellpadding="6">
         <tbody>
         <tr style="border-bottom: 1pt solid yellowgreen;">

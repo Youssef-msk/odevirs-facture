@@ -53,8 +53,12 @@
             <td style="width: 81.1875px;">&nbsp;</td>
         </tr>
         <tr>
-            <td style="width: 326.875px;" colspan="4"> Liste Achat N° :&nbsp;{{ purchases.reference }}</td>
+            <td style="width: 326.875px;" colspan="4"> <b>Liste Achat N° :</b>&nbsp;{{ purchases.reference }}</td>
             <td style="width: 243.125px;" colspan="3">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 326.875px;" colspan="4">N° facture : {{ purchases.invoiceNumber }}</td>
+            <td style="width: 243.125px;" colspan="3"></td>
         </tr>
         <tr>
             <td style="width: 326.875px;" colspan="4">Date : {{ purchases.createdAt|date('d/m/Y') }}</td>

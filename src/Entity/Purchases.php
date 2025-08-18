@@ -29,6 +29,9 @@ class Purchases
     #[ORM\Column(length: 50)]
     private ?string $reference = null;
 
+    #[ORM\Column(length: 300)]
+    private ?string $invoiceNumber = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comment = null;
 
@@ -166,6 +169,16 @@ class Purchases
     public function setAmountTotalTtc(?float $amountTotalTtc): void
     {
         $this->amountTotalTtc = $amountTotalTtc;
+    }
+
+    public function getInvoiceNumber(): ?string
+    {
+        return $this->invoiceNumber;
+    }
+
+    public function setInvoiceNumber(?string $invoiceNumber): void
+    {
+        $this->invoiceNumber = $invoiceNumber;
     }
 
 

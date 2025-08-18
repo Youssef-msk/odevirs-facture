@@ -77,6 +77,10 @@ Modification/Consultation achat
                                 </div>
 
                                 <div class="col-md-6 mb-3">
+                                    <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">N° facture :</label>
+                                    {{ form_widget(form.invoiceNumber,{'attr': {'class': 'form-control','placeholder':'N° facture'}}) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">Commentaire :</label>
                                     {{ form_widget(form.comment,{'attr': {'class': 'form-control','placeholder':'Commentaire ...'}}) }}
                                 </div>
@@ -92,7 +96,6 @@ Modification/Consultation achat
                                     <label  class="form-label font-weight-bold text-muted text-uppercase">Mode paiement :</label>
                                     {{ form_widget(form.paymentMode,{'attr': {'class': 'form-select form-control'}}) }}
                                 </div>
-
                             </div>
                         </div>
                     </div>

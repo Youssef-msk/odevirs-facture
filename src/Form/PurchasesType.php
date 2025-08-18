@@ -25,6 +25,9 @@ class PurchasesType extends AbstractType
             ->add('comment',null, [
                 'required' => false,
             ])
+            ->add('invoiceNumber',null, [
+                'required' => false,
+            ])
             ->add('distributor',EntityType::class,[
                 'class' => Distributor::class,
                 'choice_label' => 'company',
