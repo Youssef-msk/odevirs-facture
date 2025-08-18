@@ -153,6 +153,7 @@ class PurchasesController extends AbstractController
             'purchases'         => $purchases,
             'purchasesProducts'         => $this->productsRepository->findBy(["purchases" => $purchases], ["id" => "ASC"]),
             'paymentMode'         => $paymentMode,
+            'pdf_frame'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/assets/images/crm/logo/print_frame.png'),
             'amountText'         => strtoupper(str_replace("é","e",utf8_decode("$lettersAmount[0] DIRHAMS"))). strtoupper(str_replace("é","e",utf8_decode($lettersAmount[1]))),
         ];
         $html =  $this->renderView('models/purchases/pdf.html.twig', $data);
@@ -164,10 +165,10 @@ class PurchasesController extends AbstractController
             'defaultFont' => 'Arial',
             'defaultPaperSize' => 'A4',
             'defaultPaperOrientation' => 'portrait',
-            'margin_top' => 0,
-            'margin_right' => 0,
-            'margin_bottom' => 0,
-            'margin_left' => 100000000,
+            'margin_top' => 1,
+            'margin_right' => 1,
+            'margin_bottom' => 1,
+            'margin_left' => 1,
         ]);
 
         $dompdf->setPaper('A4', 'portrait');
