@@ -152,7 +152,7 @@ Modification/Consultation bon sortie
                                                         </div>
                                                         <div class="data-content" style="min-width: 400px;">
                                                             <div>
-                                                                <input type="text" readonly id="selectProducts{{ deliveryNoteProduct.product.id }}" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][idProduct]"  class="form-select form-control selectedProductItems">
+                                                                <input type="text" id="selectProducts{{ deliveryNoteProduct.product.id }}" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][idProduct]"  class="form-select form-control selectedProductItems">
                                                             </div>
                                                             <p class="m-0 mt-1">
                                                                 <input type="text" readonly name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][brand]" required="required" maxlength="255" class="mb-0 form-control form-control-sm" placeholder="Marque" value="{{ deliveryNoteProduct.product.brand }}">
@@ -177,7 +177,7 @@ Modification/Consultation bon sortie
                                                     <input  onchange="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" onkeyup="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" onkeydown="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" type="text" id="price{{ deliveryNoteProduct.product.id }}" inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][priceTtc]" class="form-control form-control-sm products_price"  value="{{ deliveryNoteProduct.priceTtc }}">
                                                 </td>
                                                 <td class="text-left">
-                                                    <input  type="text" readonly inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][priceTotalTtc]" class="form-control form-control-sm" value="{{ deliveryNoteProduct.priceTotalTtc }}">
+                                                    <input  type="text" readonly inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][priceTotalTtc]" class="form-control form-control-sm sumPriceTotalTtc" value="{{ deliveryNoteProduct.priceTotalTtc }}">
                                                 </td>
                                                 <td>
                                                     <div class="d-flex justify-content-end align-items-center">
@@ -206,6 +206,10 @@ Modification/Consultation bon sortie
                                 <div class="d-flex justify-content-end mb-2">
                                     TOTAL HT: <p class="ml-2 mb-0" id="sumPriceTotalHtLabel">00,00</p>
                                     <input type="hidden" name="dataDeliveryNoteSalesProductsAmounts[sumPriceTotalHtLabel]" class="sumPriceTotalHtLabel" value="0">
+                                </div>
+                                <div class="d-flex justify-content-end mb-2">
+                                    TVA : <p class="ml-2 mb-0" id="sumTotalTaxeLabel">00,00</p>
+                                    <input type="hidden" name="sumTotalTaxeLabel" class="sumTotalTaxeLabel" value="0">
                                 </div>
                                 <div class="d-flex justify-content-end mb-2">
                                     Montant NET TTC (MAD) : <p class="ml-2 mb-0 font-weight-bold" id="sumPriceTotalTtcLabel">00,00</p>
@@ -314,7 +318,7 @@ Modification/Consultation bon sortie
                 <input  onchange="calculateQuantityTrigger('uniqueLineId')" onkeyup="calculateQuantityTrigger('uniqueLineId')" onkeydown="calculateQuantityTrigger('uniqueLineId')" type="text" id="priceuniqueLineId" inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[uniqueLineId][priceTtc]" class="form-control form-control-sm products_price"  value="0">
             </td>
             <td class="text-left">
-                <input  type="text" readonly inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[uniqueLineId][priceTotalTtc]" class="form-control form-control-sm" value="">
+                <input  type="text" readonly inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[uniqueLineId][priceTotalTtc]" class="form-control form-control-sm sumPriceTotalTtc" value="">
             </td>
             <td>
                 <div class="d-flex justify-content-end align-items-center">
@@ -335,7 +339,15 @@ Modification/Consultation bon sortie
         function onErrorEvent(img){
             img.onerror=null;img.src="{{ app.request.schemeAndHttpHost }}/data/images/products/default.png";
         }
+        function deleteProductRow(productId){
+            var elementProductRow = "productRow"+productId+"";
+            var $productRow = $("." + elementProductRow + "");
+            $productRow.remove();
 
+            calculateSumFooterElements();
+
+        }
+        
         function calculateQuantityTrigger(productId){
             var elementnewProductQuantity = "dataDeliveryNoteSalesProducts["+productId+"][quantity]";
             var $newProductQuantity = $("[name='" + elementnewProductQuantity + "']");
@@ -357,11 +369,47 @@ Modification/Consultation bon sortie
             var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
             $newProductelementnewpriceHt.val(newPriceHt.toFixed(2).toString().replace(".",","));
 
-            //calculateSumFooterElements();
+            calculateSumFooterElements();
 
         }
 
+        function calculateSumFooterElements() {
+
+            var sumPriceTotalTtc = 0;
+            $('.sumPriceTotalTtc').each(function() {
+                var value = parseFloat($(this).val().replace(/,/g, "."));
+                if (!isNaN(value)) {
+                    sumPriceTotalTtc += value;
+                }
+            });
+
+            if (sumPriceTotalTtc > 0){
+                $("#sumPriceTotalTtcLabel").html(sumPriceTotalTtc.toFixed(2).toString().replace(".",","));
+                $(".sumPriceTotalTtcLabel").val(sumPriceTotalTtc.toFixed(2).toString().replace(".",","));
+
+                var newPriceTTc =  (parseFloat($(".sumPriceTotalTtcLabel").val().replace(/,/g, ".")));
+                var newRate  =  (newPriceTTc / 1.2) * 0.2;
+                var newPriceHt = (newPriceTTc - newRate);
+
+                $("#sumPriceTotalHtLabel").html(newPriceHt.toFixed(2).toString().replace(".",","));
+                $(".sumPriceTotalHtLabel").val(newPriceHt.toFixed(2).toString().replace(".",","));
+
+                $("#sumTotalTaxeLabel").html(newRate.toFixed(2).toString().replace(".",","));
+                $(".sumTotalTaxeLabel").val(newRate.toFixed(2).toString().replace(".",","));
+            }else {
+                $("#sumPriceTotalTtcLabel").html("00,00");
+                $(".sumPriceTotalTtcLabel").val("00,00");
+
+                $("#sumPriceTotalHtLabel").html("00,00");
+                $(".sumPriceTotalHtLabel").val("00,00");
+
+                $("#sumTotalTaxeLabel").html("00,00");
+                $(".sumTotalTaxeLabel").val("00,00");
+            }
+        }
+
         $(document).ready(function() {
+            calculateSumFooterElements();
 
 
             $(".choicesjsSelect2").select2({
@@ -425,7 +473,6 @@ Modification/Consultation bon sortie
                 var destinationTableBody = $('#delivery_noteProductsBody');  // Target the destination table's tbody
                 destinationTableBody.append(row); // Append the row to the destination table
 
-                console.log(pathSerachProducts)
                 var uniqueLineId{{ "searchProducts" }} = $('#selectProducts'+uniqueLineId).magicSuggest({
                     data: pathSerachProducts,
                     valueField: 'id',
@@ -446,7 +493,6 @@ Modification/Consultation bon sortie
 
                 $(uniqueLineId{{ "searchProducts" }}).on('selectionchange', function(event, selection) {
                     var selectedProductData = this.getSelection()[0];
-
                     try {
                         var elementnewpriceHt = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceHt]";
                         var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
@@ -520,55 +566,124 @@ Modification/Consultation bon sortie
                         var $newProductelementpicture = $("[name='" + elementpicture + "']");
                         $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/default.png");
                     }
-
-
                 });
 
 
 
-                $(uniqueLineId{{ "searchProducts" }}).on('selectionremove', function(e, removedItems){
-                    var selectedProductData = this.getSelection()[0];
-
-                    var elementnewpriceHt = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceHt]";
-                    var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
-                    $newProductelementnewpriceHt.val(0);
-
-                    var elementtaxe = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][taxe]";
-                    var $newProductelementtaxe = $("[name='" + elementtaxe + "']");
-                    $newProductelementtaxe.val(0);
-
-                    var elementprice = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceTtc]";
-                    var $newProductelementprice = $("[name='" + elementprice + "']");
-                    $newProductelementprice.val(0);
-
-                    var elementprice = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceTotalTtc]";
-                    var $newProductelementprice = $("[name='" + elementprice + "']");
-                    $newProductelementprice.val(0);
-
-                    var elementbrand = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][brand]";
-                    var $newProductelementbrand = $("[name='" + elementbrand + "']");
-                    $newProductelementbrand.val(0);
-
-                    var elementref = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][ref]";
-                    var $newProductelementref = $("[name='" + elementref + "']");
-                    $newProductelementref.val(0);
-
-                    var elementid = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][id]";
-                    var $newProductelementid = $("[name='" + elementid + "']");
-                    $newProductelementid.val(0);
-
-                    var elementid = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][id]";
-                    var $newProductelementid = $("[name='" + elementid + "']");
-                    $newProductelementid.val(0);
-
-                    var elementpicture = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][picture]";
-                    var $newProductelementpicture = $("[name='" + elementpicture + "']");
-                    $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/default.png");
-
-                });
             });
 
 
+
+            var alreadySelectedProducts = "?alreadySelectedProducts=0";
+            $('.selectedProductItems').each(function() {
+                var value = $(this).val();
+                alreadySelectedProducts += "," + value ;
+            });
+
+            var pathSerachProducts = "{{ path('app_products_search') }}" + alreadySelectedProducts;
+
+            {% for deliveryNoteProduct in deliveryNoteProducts %}
+            var {{  "searchProducts" ~ deliveryNoteProduct.product.id }} = $('#selectProducts{{ deliveryNoteProduct.product.id }}').magicSuggest({
+                data: pathSerachProducts,
+                valueField: 'id',
+                placeholder: "Rechercher",
+                displayField: 'name',
+                allowFreeEntries: false,
+                maxSelection: 1,
+                renderTo: 'body',
+                renderer: function(data){
+                    return '<div class="active-project-1 d-flex align-items-center mt-0"><div class="h-avatar is-medium">' +
+                        '<img class="avatar rounded" alt="DESIGNATION" onerror="onErrorEvent(this)" src="{{ app.request.schemeAndHttpHost }}/data/images/products/' + data.picture + '" />' +
+                        '</div><div class="data-content"><div><span class="font-weight-bold">' + data.name +
+                        '</span></div><p class="m-0 mt-1">REF:' + data.ref +
+                        '</p></div></div>';
+                }
+            });
+
+            $({{ "searchProducts" ~ deliveryNoteProduct.product.id }}).on('selectionchange', function(event, selection) {
+                var selectedProductData = this.getSelection()[0];
+                try {
+                    var elementnewpriceHt = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceHt]";
+                    var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
+                    $newProductelementnewpriceHt.val(selectedProductData.priceHt);
+
+                    var elementtaxe = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][taxe]";
+                    var $newProductelementtaxe = $("[name='" + elementtaxe + "']");
+                    $newProductelementtaxe.val(selectedProductData.rate);
+
+                    var elementprice = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceTtc]";
+                    var $newProductelementprice = $("[name='" + elementprice + "']");
+                    $newProductelementprice.val(selectedProductData.price);
+
+                    var elementprice = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceTotalTtc]";
+                    var $newProductelementprice = $("[name='" + elementprice + "']");
+                    $newProductelementprice.val(selectedProductData.price);
+
+                    var elementbrand = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][brand]";
+                    var $newProductelementbrand = $("[name='" + elementbrand + "']");
+                    $newProductelementbrand.val(selectedProductData.brand);
+
+                    var elementref = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][ref]";
+                    var $newProductelementref = $("[name='" + elementref + "']");
+                    $newProductelementref.val(selectedProductData.ref);
+
+                    var elementid = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][id]";
+                    var $newProductelementid = $("[name='" + elementid + "']");
+                    $newProductelementid.val(selectedProductData.ref);
+
+                    var elementid = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][id]";
+                    var $newProductelementid = $("[name='" + elementid + "']");
+                    $newProductelementid.val(selectedProductData.id);
+
+                    var elementpicture = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][picture]";
+                    var $newProductelementpicture = $("[name='" + elementpicture + "']");
+                    $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/"+selectedProductData.picture);
+                }catch (e){
+                    try {
+                        var elementnewpriceHt = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceHt]";
+                        var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
+                        $newProductelementnewpriceHt.val(0);
+
+                        var elementtaxe = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][taxe]";
+                        var $newProductelementtaxe = $("[name='" + elementtaxe + "']");
+                        $newProductelementtaxe.val(0);
+
+                        var elementprice = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceTtc]";
+                        var $newProductelementprice = $("[name='" + elementprice + "']");
+                        $newProductelementprice.val(0);
+
+                        var elementprice = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceTotalTtc]";
+                        var $newProductelementprice = $("[name='" + elementprice + "']");
+                        $newProductelementprice.val(0);
+
+                        var elementbrand = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][brand]";
+                        var $newProductelementbrand = $("[name='" + elementbrand + "']");
+                        $newProductelementbrand.val(0);
+
+                        var elementref = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][ref]";
+                        var $newProductelementref = $("[name='" + elementref + "']");
+                        $newProductelementref.val(0);
+
+                        var elementid = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][id]";
+                        var $newProductelementid = $("[name='" + elementid + "']");
+                        $newProductelementid.val(0);
+
+                        var elementid = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][id]";
+                        var $newProductelementid = $("[name='" + elementid + "']");
+                        $newProductelementid.val(0);
+
+                        var elementpicture = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][picture]";
+                        var $newProductelementpicture = $("[name='" + elementpicture + "']");
+                        $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/default.png");
+                    }catch (ex){
+
+                    }
+
+                }
+            });
+
+              {{  "searchProducts" ~ deliveryNoteProduct.product.id }}.setValue(["{{ deliveryNoteProduct.product.nameCommerciale }}"]);
+            {% endfor %}
 
             function generateUniqueId() {
                 // Get current timestamp (milliseconds since epoch)
@@ -579,14 +694,7 @@ Modification/Consultation bon sortie
                 return `temp_${timestamp}_${randomNumber}`;
             }
 
-            function deleteProductRow(productId){
-                var elementProductRow = "productRow"+productId+"";
-                var $productRow = $("." + elementProductRow + "");
-                $productRow.remove();
 
-                calculateSumFooterElements();
-
-            }
 
             $('#delivery_note_paymentMode').change();
 

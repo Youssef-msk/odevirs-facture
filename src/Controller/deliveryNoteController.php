@@ -72,6 +72,10 @@ class deliveryNoteController extends AbstractController
             $deliveryNote->setEnabled(1);
             $deliveryNote->setDeleted(0);
 
+            $deliveryNote->setAmountTotalTtc(0);
+            $deliveryNote->setAmountTotalTaxe(0);
+            $deliveryNote->setAmoutTotalHt(0);
+
             $deliveryNoteRepository->save($deliveryNote, true);
             return $this->redirectToRoute('app_delivery_note_edit', ["id" => $deliveryNote->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -107,6 +111,9 @@ class deliveryNoteController extends AbstractController
             $deliveryNote->setUpdatedAt(new \DateTimeImmutable());
             $deliveryNote->setEnabled(1);
             $deliveryNote->setDeleted(0);
+            $deliveryNote->setAmountTotalTtc(floatval(str_replace(",",".",$dataDeliveryNoteSalesProductsAmounts["sumPriceTotalTtcLabel"])));
+            $deliveryNote->setAmountTotalTaxe(floatval(str_replace(",",".",$dataDeliveryNoteSalesProductsAmounts["sumTotalTaxeLabel"])));
+            $deliveryNote->setAmoutTotalHt(floatval(str_replace(",",".",$dataDeliveryNoteSalesProductsAmounts["sumPriceTotalHtLabel"])));
 
             $deliveryNoteRepository->save($deliveryNote, true);
 
