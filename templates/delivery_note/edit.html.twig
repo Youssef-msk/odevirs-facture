@@ -347,7 +347,7 @@ Modification/Consultation bon sortie
             calculateSumFooterElements();
 
         }
-        
+
         function calculateQuantityTrigger(productId){
             var elementnewProductQuantity = "dataDeliveryNoteSalesProducts["+productId+"][quantity]";
             var $newProductQuantity = $("[name='" + elementnewProductQuantity + "']");
@@ -582,6 +582,7 @@ Modification/Consultation bon sortie
 
             var pathSerachProducts = "{{ path('app_products_search') }}" + alreadySelectedProducts;
 
+            {% if deliveryNoteProducts is defined %}
             {% for deliveryNoteProduct in deliveryNoteProducts %}
             var {{  "searchProducts" ~ deliveryNoteProduct.product.id }} = $('#selectProducts{{ deliveryNoteProduct.product.id }}').magicSuggest({
                 data: pathSerachProducts,
@@ -684,7 +685,7 @@ Modification/Consultation bon sortie
 
               {{  "searchProducts" ~ deliveryNoteProduct.product.id }}.setValue(["{{ deliveryNoteProduct.product.nameCommerciale }}"]);
             {% endfor %}
-
+            {% endif %}
             function generateUniqueId() {
                 // Get current timestamp (milliseconds since epoch)
                 const timestamp = Date.now();
