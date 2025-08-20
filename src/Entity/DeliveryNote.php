@@ -54,6 +54,9 @@ class DeliveryNote
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $paymentReference = null;
 
+    #[ORM\OneToOne(mappedBy: 'deliveryNote', cascade: ['persist', 'remove'])]
+    private ?Sales $sales = null;
+
     public function __construct()
     {
     }
@@ -184,6 +187,28 @@ class DeliveryNote
     public function setAmountTotalTtc(?float $amountTotalTtc): void
     {
         $this->amountTotalTtc = $amountTotalTtc;
+    }
+
+    public function getSales(): ?Sales
+    {
+        return $this->sales;
+    }
+
+    public function setSales(?Sales $sales): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($sales === null && $this->sales !== null) {
+            $this->sales->setDeliveryNote(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($sales !== null && $sales->getDeliveryNote() !== $this) {
+            $sales->setDeliveryNote($this);
+        }
+
+        $this->sales = $sales;
+
+        return $this;
     }
 
 

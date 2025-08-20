@@ -58,7 +58,7 @@ Modification/Consultation bon sortie
                         <div class="col-lg-12 mb-3">
                             <div class="d-flex justify-content-between align-items-end">
                                 <h4 class="font-weight-bold">Consultation/Modification bon de sortie</h4>
-                                <a class="btn btn-success btn-sm" href="{{ path('app_delivery_note_generate',{'id':deliveryNote.id}) }}" target="_blank">
+                                <a href="#" class="btn btn-success btn-sm confirm-link" data-url="{{ path('app_delivery_note_generate',{'id':deliveryNote.id}) }}" target="_blank">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
@@ -371,6 +371,43 @@ Modification/Consultation bon sortie
 
 {% block javascriptfooter %}
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".confirm-link").forEach(function (el) {
+                el.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    let url = el.getAttribute("data-url");
+
+                swal({
+                        title: 'Are you sure?',
+                        text: "Attention : Une fois le bon de livraison généré, ce bon de sortie est verrouillé pour des raisons de cohérence de stock. Si vous avez besoin de faire des changements, annulez le bon de livraison et effectuez les modifications sur le bon de sortie avant de le regénérer.!",
+                        icon: 'warning',
+                        buttons: {
+                            cancel: {
+                                text: "Non",
+                                value: null,
+                                visible: true,
+                                className: "",
+                                closeModal: true,
+                            },
+                            confirm: {
+                                text: "Oui, Générer!",
+                                value: true,
+                                visible: true,
+                                className: "",
+                                closeModal: true
+                            }
+                        }
+                    })
+                        .then((result) => {
+                            if (result) {
+                                window.location.href = url;
+                            }
+                        });
+                });
+            });
+        });
+
         function onErrorEvent(img){
             img.onerror=null;img.src="{{ app.request.schemeAndHttpHost }}/data/images/products/default.png";
         }

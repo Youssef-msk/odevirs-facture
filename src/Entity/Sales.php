@@ -70,6 +70,9 @@ class Sales
     #[ORM\Column]
     private ?bool $generatedInvoice = null;
 
+    #[ORM\OneToOne(inversedBy: 'sales', cascade: ['persist', 'remove'])]
+    private ?DeliveryNote $deliveryNote = null;
+
 
     public function __construct()
     {
@@ -280,6 +283,18 @@ class Sales
     public function setGeneratedInvoice(bool $generatedInvoice): self
     {
         $this->generatedInvoice = $generatedInvoice;
+
+        return $this;
+    }
+
+    public function getDeliveryNote(): ?DeliveryNote
+    {
+        return $this->deliveryNote;
+    }
+
+    public function setDeliveryNote(?DeliveryNote $deliveryNote): static
+    {
+        $this->deliveryNote = $deliveryNote;
 
         return $this;
     }

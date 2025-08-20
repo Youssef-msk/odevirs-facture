@@ -6,11 +6,15 @@ use App\Entity\DeliveryNote;
 use App\Entity\DeliveryNoteProducts;
 use App\Entity\Products;
 use App\Entity\Purchases;
+use App\Entity\Sales;
+use App\Entity\SalesProducts;
 use App\Form\DeliveryNoteType;
 use App\Repository\DeliveryNoteProductsRepository;
 use App\Repository\DeliveryNoteRepository;
 use App\Repository\ProductsRepository;
 use App\Repository\PurchasesRepository;
+use App\Repository\SalesProductsRepository;
+use App\Repository\SalesRepository;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -35,11 +39,15 @@ class deliveryNoteController extends AbstractController
 
     private $productsRepository;
     private $deliveryNoteProductRepository;
-    public function __construct(KernelInterface $kernel,ProductsRepository $productsRepository,DeliveryNoteProductsRepository $deliveryNoteProductsRepository)
+    private $salesRepository;
+    private $salesProductsRepository;
+    public function __construct(KernelInterface $kernel,ProductsRepository $productsRepository,DeliveryNoteProductsRepository $deliveryNoteProductsRepository,SalesRepository $salesRepository,SalesProductsRepository $salesProductsRepository)
     {
         $this->kernel = $kernel;
         $this->productsRepository = $productsRepository;
         $this->deliveryNoteProductRepository = $deliveryNoteProductsRepository;
+        $this->salesRepository = $salesRepository;
+        $this->salesProductsRepository = $salesProductsRepository;
 
     }
 
@@ -713,6 +721,57 @@ class deliveryNoteController extends AbstractController
     #[Route('/{id}/generate/sales', name: 'app_delivery_note_generate', methods: ['GET'])]
     public function saveToSales(DeliveryNote $deliveryNote,DeliveryNoteRepository $deliveryNoteRepository): Response
     {
+        if(!$deliveryNote->getGeneratedSale()){
+            $deliveryNote->setGeneratedSale(true);
+            $sale = new Sales();
+            $saleReference = date('hsdmy');
+            $sale->setReference($saleReference);
+            $sale->setInvoiceNumber(0);
+            $sale->setGeneratedInvoice(false);
+            $sale->setCreatedAt(new \DateTimeImmutable());
 
+            $sale->setUpdatedAt(new \DateTimeImmutable());
+            $sale->setEnabled(1);
+            $sale->setDeleted(0);
+
+
+            $sale->setAmountTotalTaxe($deliveryNote->getAmountTotalTaxe());
+            $sale->setAmoutTotalHt($deliveryNote->getAmoutTotalHt());
+            $sale->setAmountTotalTtc($deliveryNote->getAmountTotalTtc());
+
+            $sale->setCustomer($deliveryNote->getCustomer());
+            $sale->setPaymentReference($deliveryNote->getPaymentReference());
+            $sale->setPaymentMode($deliveryNote->getPaymentMode());
+            $sale->setComment($deliveryNote->getComment());
+            $sale->setDeliveryNote($deliveryNote);
+
+
+            $this->salesRepository->save($sale,true);
+
+
+            foreach ($deliveryNote->getDeliveryNoteProducts() as $productId => $productData){
+                /** @var DeliveryNoteProducts $productData */
+                $productSale = new SalesProducts();
+                $productSale->setSale($sale);
+                $productSale->setQuantity($productData->getQuantity());
+                $productSale->setCreatedAt(new \DateTimeImmutable());
+                $productSale->setUpdatedAt(new \DateTimeImmutable());
+                $productSale->setProduct($productData->getProduct());
+                $productSale->setPriceHt($productData->getPriceHt());
+                $productSale->setPriceTotalHt($productData->getPriceTotalHt());
+                $productSale->setPriceTtc($productData->getPriceTtc());
+                $productSale->setPriceTotalTtc($productData->getPriceTotalTtc());
+                $productSale->setTaxeType($productData->getTaxeType());
+                $productSale->setTaxe($productData->getTaxe());
+
+                $this->salesProductsRepository->save($productSale,true);
+            }
+
+
+        }else{
+            $sale = $deliveryNote->getSales();
+        }
+
+        return $this->redirectToRoute('app_sales_edit', ["id" => $sale->getId()], Response::HTTP_SEE_OTHER);
     }
 }
