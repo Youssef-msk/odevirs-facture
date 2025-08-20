@@ -209,7 +209,7 @@ Modification/Consultation bon sortie
                                 </div>
                                 <div class="d-flex justify-content-end mb-2">
                                     TVA : <p class="ml-2 mb-0" id="sumTotalTaxeLabel">00,00</p>
-                                    <input type="hidden" name="sumTotalTaxeLabel" class="sumTotalTaxeLabel" value="0">
+                                    <input type="hidden" name="dataDeliveryNoteSalesProductsAmounts[sumTotalTaxeLabel]" class="sumTotalTaxeLabel" value="0">
                                 </div>
                                 <div class="d-flex justify-content-end mb-2">
                                     Montant NET TTC (MAD) : <p class="ml-2 mb-0 font-weight-bold" id="sumPriceTotalTtcLabel">00,00</p>
@@ -409,7 +409,6 @@ Modification/Consultation bon sortie
         }
 
         $(document).ready(function() {
-            calculateSumFooterElements();
 
 
             $(".choicesjsSelect2").select2({
@@ -529,6 +528,9 @@ Modification/Consultation bon sortie
                         var elementpicture = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][picture]";
                         var $newProductelementpicture = $("[name='" + elementpicture + "']");
                         $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/"+selectedProductData.picture);
+
+                        calculateSumFooterElements();
+
                     }catch (e){
                         var elementnewpriceHt = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][priceHt]";
                         var $newProductelementnewpriceHt = $("[name='" + elementnewpriceHt + "']");
@@ -565,11 +567,12 @@ Modification/Consultation bon sortie
                         var elementpicture = "dataDeliveryNoteSalesProducts["+uniqueLineId+"][picture]";
                         var $newProductelementpicture = $("[name='" + elementpicture + "']");
                         $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/default.png");
+                        calculateSumFooterElements();
+                        
                     }
                 });
 
 
-                calculateSumFooterElements();
 
             });
 
@@ -699,6 +702,7 @@ Modification/Consultation bon sortie
 
 
             $('#delivery_note_paymentMode').change();
+            calculateSumFooterElements();
 
         });
     </script>
