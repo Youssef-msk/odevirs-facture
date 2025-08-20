@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\DeliveryNote;
 use App\Entity\DeliveryNoteProducts;
-use App\Entity\Sales;
-use App\Entity\SalesProducts;
+use App\Entity\Products;
+use App\Entity\Purchases;
 use App\Form\DeliveryNoteType;
 use App\Repository\DeliveryNoteProductsRepository;
 use App\Repository\DeliveryNoteRepository;
@@ -27,9 +27,14 @@ class deliveryNoteController extends AbstractController
 {
     private $kernel;
 
-    public function __construct(KernelInterface $kernel)
+    private $productsRepository;
+    private $deliveryNoteProductRepository;
+    public function __construct(KernelInterface $kernel,ProductsRepository $productsRepository,DeliveryNoteProductsRepository $deliveryNoteProductsRepository)
     {
         $this->kernel = $kernel;
+        $this->productsRepository = $productsRepository;
+        $this->deliveryNoteProductRepository = $deliveryNoteProductsRepository;
+
     }
 
     #[Route('/', name: 'app_delivery_note_index', methods: ['GET'])]
@@ -54,13 +59,11 @@ class deliveryNoteController extends AbstractController
         $deliveryNote->setGeneratedSale(false);
 
         $data = $request->request->all();
-        $productListToAdd = $data["dataDeliveryNoteProducts"] ?? [];
-
         $form = $this->createForm(DeliveryNoteType::class, $deliveryNote,["edit" => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $dateString = $data["salesDate"];
+            $dateString = $data["deliveryNoteDate"];
             $format = 'Y-m-d';
             $dateTime = DateTimeImmutable::createFromFormat($format, $dateString);
             $deliveryNote->setCreatedAt($dateTime);
@@ -70,9 +73,6 @@ class deliveryNoteController extends AbstractController
             $deliveryNote->setDeleted(0);
 
             $deliveryNoteRepository->save($deliveryNote, true);
-
-            //insertProducts
-            //$this->updateProductsFromRequest($deliveryNote,$productListToAdd);
             return $this->redirectToRoute('app_delivery_note_edit', ["id" => $deliveryNote->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -90,104 +90,84 @@ class deliveryNoteController extends AbstractController
         $form = $this->createForm(DeliveryNoteType::class, $deliveryNote,["edit" => true]);
         $form->handleRequest($request);
         $data = $request->request->all();
-        $deliveryNoteProducts = [];
 
         $productsDeliveryNoteObjects = $deliveryNoteProductsRepository->findBy([
             "deliveryNote" => $deliveryNote
         ],orderBy: ["id" => "DESC"]);
 
-        foreach ($productsDeliveryNoteObjects as $productsDeliveryNoteItem){
-            $deliveryNoteProducts[] = $productsDeliveryNoteItem->getProduct();
-        }
+        $productListToManage = $data["dataDeliveryNoteSalesProducts"] ?? [];
+        $dataDeliveryNoteSalesProductsAmounts = $data["dataDeliveryNoteSalesProductsAmounts"] ?? [];
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $deliveryNote->setUpdatedAt(new \DateTimeImmutable());
-            $dateString = $data["salesDate"];
+            $dateString = $data["deliveryNoteDate"];
             $format = 'Y-m-d';
-
             $dateTime = DateTimeImmutable::createFromFormat($format, $dateString);
+            $deliveryNote->setCreatedAt($dateTime);
+
+            $deliveryNote->setUpdatedAt(new \DateTimeImmutable());
+            $deliveryNote->setEnabled(1);
+            $deliveryNote->setDeleted(0);
 
             $deliveryNoteRepository->save($deliveryNote, true);
 
             //delete prev products
-            //$this->deleteProductsSles($sale);
+            $this->deleteProducts($deliveryNote);
             //insertProducts
-            //$this->updateProductsFromRequest($sale,$productListToAdd,true);
+            $this->updateProductsFromRequest($deliveryNote,$productListToManage);
+
 
             return $this->redirectToRoute('app_delivery_note_edit', ["id" => $deliveryNote->getId()], Response::HTTP_SEE_OTHER);
+
         }
 
         return $this->renderForm('delivery_note/edit.html.twig', [
             'deliveryNote' => $deliveryNote,
             'form' => $form,
-            'deliveryNoteProducts' => $productsDeliveryNoteObjects,
-            'products' => $productsRepository->findByOrder("0")
+            'deliveryNoteProducts' => $productsDeliveryNoteObjects
         ]);
     }
 
 
-    #[Route('/products/view_new_rows/{deliveryNote}', name: 'app_delivery_note_rows', methods: ['GET','POST'])]
-    public function salesViewNewRow(Request $request,DeliveryNote $deliveryNote,ProductsRepository $productsRepository,DeliveryNoteProductsRepository $deliveryNoteProductsRepository): Response
-    {
-        $newProductData = $request->request->all();
-        $productsDataDetails = $newProductData["options"];
-        $productsObjects = [];
-        $productsDeliveryNoteObjects = $deliveryNoteProductsRepository->findBy([
-            "deliveryNote" => $deliveryNote
-        ],orderBy: ["id" => "DESC"]);
-
-        foreach ($productsDeliveryNoteObjects as $productsDeliveryNoteItem){
-            $deliveryNoteProductsRepository->remove($productsDeliveryNoteItem,true);
-        }
-
-        foreach ($productsDataDetails as $productsDataDetailItem){
-            $productSale = new DeliveryNoteProducts();
-            $productSale->setDeliveryNote($deliveryNote);
-            $productSale->setQuantity(intval($productsDataDetailItem["quantity"]));
-            $productSale->setCreatedAt(new \DateTimeImmutable());
-            $productSale->setUpdatedAt(new \DateTimeImmutable());
-            $productsObjects[] = $productsRepository->find($productsDataDetailItem["id"]);
-            $productSale->setProduct($productsRepository->find($productsDataDetailItem["id"]));
-            $productSale->setPriceHt(0);
-            $productSale->setPriceTotalHt(0);
-            $productSale->setPriceTtc(0);
-            $productSale->setPriceTotalTtc(0);
-            $productSale->setTaxeType(0);
-            $productSale->setTaxe(0);
-            $deliveryNoteProductsRepository->save($productSale,true);
-        }
-
-        return $this->renderForm('delivery_note/rowSalesProduct.html.twig', [
-            'productsObjects' => $productsObjects
-        ]);
-    }
-
-
-    private function updateProductsFromRequest(DeliveryNote $deliveryNote,$productListToAdd,$update = false)
+    private function updateProductsFromRequest(DeliveryNote $deliveryNote,$productListToAdd)
     {
         if ($productListToAdd and is_array($productListToAdd) and count($productListToAdd)){
             foreach ($productListToAdd as $productId => $productData){
-                //$productsalestored = $this->productsRepository->find($productId);
-                //$productsalestored->setQuantity($productsalestored->getQuantity() - intval($productData["quantity"]));
-                $productSale = new DeliveryNoteProducts();
-                $productSale->setSale($sale);
-                $productSale->setQuantity(intval($productData["quantity"]));
-                $productSale->setCreatedAt(new \DateTimeImmutable());
-                $productSale->setUpdatedAt(new \DateTimeImmutable());
-                $productSale->setProduct($this->productsRepository->find($productId));
-                $productSale->setPriceHt(floatval(str_replace(",",".",$productData["priceHt"])));
-                $productSale->setPriceTotalHt(floatval(str_replace(",",".",$productData["priceTotalHt"])));
-                $productSale->setPriceTtc(floatval(str_replace(",",".",$productData["priceTtc"])));
-                $productSale->setPriceTotalTtc(floatval(str_replace(",",".",$productData["priceTotalTtc"])));
-                $productSale->setTaxeType($productData["taxeType"]);
-                $productSale->setTaxe(floatval(str_replace(",",".",$productData["taxe"])));
+                $productId = intval($productData["id"]);
+                $deliveryNoteProductstored = $this->productsRepository->find($productId);
+                $deliveryNoteProductstored->setQuantity($deliveryNoteProductstored->getQuantity() - intval($productData["quantity"]));
+                $deliveryNoteProduct = new DeliveryNoteProducts();
+                $deliveryNoteProduct->setDeliveryNote($deliveryNote);
+                $deliveryNoteProduct->setQuantity(intval($productData["quantity"]));
+                $deliveryNoteProduct->setCreatedAt(new \DateTimeImmutable());
+                $deliveryNoteProduct->setUpdatedAt(new \DateTimeImmutable());
+                $deliveryNoteProduct->setProduct($this->productsRepository->find($productId));
+                $deliveryNoteProduct->setPriceHt(floatval(str_replace(",",".",$productData["priceHt"])));
+                $deliveryNoteProduct->setPriceTotalHt(floatval(str_replace(",",".",$productData["priceHt"])) * intval($productData["quantity"]));
+                $deliveryNoteProduct->setPriceTtc(floatval(str_replace(",",".",$productData["priceTtc"])));
+                $deliveryNoteProduct->setPriceTotalTtc(floatval(str_replace(",",".",$productData["priceTotalTtc"])));
+                $deliveryNoteProduct->setTaxeType("default_taxe");
+                $deliveryNoteProduct->setTaxe(floatval(str_replace(",",".",$productData["taxe"])));
 
-                //$this->productsRepository->save($productsalestored);
-                $this->salesProductsRepository->save($productSale,true);
+                $this->productsRepository->save($deliveryNoteProductstored);
+                $this->deliveryNoteProductRepository->save($deliveryNoteProduct,true);
 
             }
         }
     }
 
+
+    private function deleteProducts(DeliveryNote $deliveryNote): bool
+    {
+        $salesProducts = $this->deliveryNoteProductRepository->findBy(["deliveryNote" => $deliveryNote]);
+        foreach ($salesProducts as $product){
+            $productsalestored = $this->productsRepository->find($product->getProduct()->getId());
+            $productsalestored->setQuantity($productsalestored->getQuantity() + $product->getQuantity());
+            $this->productsRepository->save($productsalestored);
+
+            $this->deliveryNoteProductRepository->remove($product,true);
+        }
+
+        return true;
+    }
 
 }

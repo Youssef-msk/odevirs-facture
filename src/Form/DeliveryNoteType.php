@@ -22,6 +22,7 @@ class DeliveryNoteType extends AbstractType
     {
         $builder
             ->add('reference')
+            ->add('paymentReference')
             ->add('comment',null, [
                 'required' => false,
             ])

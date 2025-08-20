@@ -65,6 +65,12 @@
                                                 <th scope="col">
                                                     <label class="text-muted mb-0">Client</label>
                                                 </th>
+                                                <th scope="col" class="text-right">
+                                                    <label class="text-muted mb-0">Total HT</label>
+                                                </th>
+                                                <th scope="col">
+                                                    <label class="text-muted mb-0" >Total TTC</label>
+                                                </th>
                                                 <th scope="col" class="dates">
                                                     <label class="text-muted mb-0" >Date</label>
                                                 </th>
@@ -75,18 +81,24 @@
                                             </thead>
                                             <tbody>
 
-                                            {% for sale in deliveryNoteList %}
+                                            {% for deliveryNote in deliveryNoteList %}
                                                   <tr class="white-space-no-wrap">
                                                     <td>
-                                                        {{ sale.reference }}
+                                                        {{ deliveryNote.reference }}
                                                     </td>
-                                                    <td>{{ sale.customer.company }}</td>
+                                                    <td>{{ deliveryNote.customer.company }}</td>
+                                                      <td class="text-right">
+                                                          {{ deliveryNote.amoutTotalHt|number_format(2, ',',' ') }} DH
+                                                      </td>
+                                                      <td class="text-right">
+                                                          {{ deliveryNote.amountTotalTtc|number_format(2, ',',' ') }} DH
+                                                      </td>
                                                     <td>
-                                                        {{ sale.createdAt|date('d/m/Y H:i:s') }}
+                                                        {{ deliveryNote.createdAt|date('d/m/Y H:i:s') }}
                                                     </td>
                                                     <td>
                                                         <div class="d-flex justify-content-end align-items-center">
-                                                            <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier" href="{{ path('app_delivery_note_edit',{'id': sale.id }) }}">
+                                                            <a class="" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier" href="{{ path('app_delivery_note_edit',{'id': deliveryNote.id }) }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="text-secondary" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                                 </svg>

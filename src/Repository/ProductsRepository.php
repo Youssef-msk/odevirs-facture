@@ -66,7 +66,7 @@ class ProductsRepository extends ServiceEntityRepository
         $alreadySelectedProducts = explode(",",$alreadySelectedProducts);
         $qb = $this->createQueryBuilder('p');
         return $qb
-            ->select("p.name as name,p.id,p.picture as picture,p.nameCommerciale, p.ref")
+            ->select("p.name as name,p.id,p.picture as picture,p.nameCommerciale, p.ref,p.rate,p.price,p.priceHt,p.brand")
             ->where($qb->expr()->notIn('p.id', $alreadySelectedProducts))
             ->andWhere("(p.nameCommerciale like :term or p.name like :term or p.ref like :term) and p.enabled = 1 and p.deleted = 0 and  p.quantity > 0")
             ->setParameter('term', '%'.$term.'%')

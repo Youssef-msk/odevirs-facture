@@ -44,12 +44,18 @@ class Customers
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Sales::class)]
     private Collection $sales;
 
+
+
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: DeliveryNote::class)]
+    private Collection $deliveryNote;
+
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: BlHead::class)]
     private Collection $blHeads;
 
     public function __construct()
     {
         $this->sales = new ArrayCollection();
+        $this->deliveryNote = new ArrayCollection();
         $this->blHeads = new ArrayCollection();
     }
 

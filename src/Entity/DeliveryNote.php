@@ -21,7 +21,7 @@ class DeliveryNote
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sales', fetch: 'EAGER')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'deliveryNote')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Customers $customer = null;
 
@@ -37,8 +37,22 @@ class DeliveryNote
     #[ORM\Column]
     private ?bool $generatedSale = null;
 
+    #[ORM\Column]
+    private ?float $amoutTotalHt = null;
+
+    #[ORM\Column]
+    private ?float $amountTotalTaxe = null;
+
+    #[ORM\Column]
+    private ?float $amountTotalTtc = null;
+
     #[ORM\OneToMany(mappedBy: 'deliveryNote', targetEntity: DeliveryNoteProducts::class)]
     private Collection $deliveryNoteProducts;
+
+
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $paymentReference = null;
 
     public function __construct()
     {
@@ -131,6 +145,47 @@ class DeliveryNote
     {
         $this->deliveryNoteProducts = $deliveryNoteProducts;
     }
+
+    public function getPaymentReference(): ?string
+    {
+        return $this->paymentReference;
+    }
+
+    public function setPaymentReference(?string $paymentReference): void
+    {
+        $this->paymentReference = $paymentReference;
+    }
+
+    public function getAmoutTotalHt(): ?float
+    {
+        return $this->amoutTotalHt;
+    }
+
+    public function setAmoutTotalHt(?float $amoutTotalHt): void
+    {
+        $this->amoutTotalHt = $amoutTotalHt;
+    }
+
+    public function getAmountTotalTaxe(): ?float
+    {
+        return $this->amountTotalTaxe;
+    }
+
+    public function setAmountTotalTaxe(?float $amountTotalTaxe): void
+    {
+        $this->amountTotalTaxe = $amountTotalTaxe;
+    }
+
+    public function getAmountTotalTtc(): ?float
+    {
+        return $this->amountTotalTtc;
+    }
+
+    public function setAmountTotalTtc(?float $amountTotalTtc): void
+    {
+        $this->amountTotalTtc = $amountTotalTtc;
+    }
+
 
 
 }

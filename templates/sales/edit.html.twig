@@ -116,7 +116,7 @@ Modification/Consultation bon livraison
                                     <input type="date" name="salesDate" class="form-control" value="{{ currentDate is defined and currentDate  ? currentDate :sale.createdAt|date('Y-m-d') }}">
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-3 sales_echeance">
                                     <label for="Text8" class="form-label font-weight-bold text-muted text-uppercase">Date Echéance :</label>
                                     <input type="date" id="sales_echeance" name="sales[echeance]" class="form-control" placeholder="Date Echéance ..." value="{{ sale.echeance }}">
                                 </div>
@@ -369,9 +369,9 @@ Modification/Consultation bon livraison
                 }
 
                 if ($(this).val() === '3' || $(this).val() === '3') {
-                    $('#sales_echeance').addClass('hidden');
+                    $('.sales_echeance').addClass('hidden');
                 } else {
-                    $('#sales_echeance').removeClass('hidden');
+                    $('.sales_echeance').removeClass('hidden');
                 }
             });
             $('#sales_paymentMode').change();
@@ -739,7 +739,6 @@ Modification/Consultation bon livraison
 
         function onErrorEvent(img){
             img.onerror=null;img.src="data/images/products/default.png";
-
         }
 
 
