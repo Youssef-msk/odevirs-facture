@@ -43,8 +43,43 @@ Modification/Consultation bon sortie
                                 </ol>
                             </nav>
                         </div>
+                        {% if app.current_route != "app_delivery_note_new" %}
+                            <a class="btn btn-primary btn-sm" href="{{ path('app_delivery_note_print',{'id':deliveryNote.id}) }}" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Télécharger Bons de sortie N° {{ deliveryNote.reference }}
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
+                {% if app.current_route != "app_delivery_note_new" %}
+                    {% if not deliveryNote.generatedSale %}
+                        <div class="col-lg-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-end">
+                                <h4 class="font-weight-bold">Consultation/Modification bon de sortie</h4>
+                                <a class="btn btn-success btn-sm" href="{{ path('app_delivery_note_generate',{'id':deliveryNote.id}) }}" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Générer le bon de livraison
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-lg-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-end">
+                                <h4 class="font-weight-bold">Consultation/Modification bon de sortie</h4>
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                                        <use xlink:href="#exclamation-triangle-fill"></use>
+                                    </svg>
+                                    <div>ce bon de sortie est verrouillé </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
 
 
             </div>
@@ -86,25 +121,18 @@ Modification/Consultation bon sortie
                             {{ form_widget(form.comment,{'attr': {'class': 'form-control','placeholder':'Commentaire ...'}}) }}
                         </div>
                     </div>
-
-                    <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
-                        <div class="flex align-items-start flex-column">
-                            <h6></h6>
-                            <p class="mb-0 my-2" style="color: red"></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary px-4" type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
-                                </svg>
-                                Sauvegarder
-                            </button>
-                        </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button class="btn btn-primary px-4" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"></path>
+                            </svg>
+                            Sauvegarder
+                        </button>
                     </div>
+
                 </div>
                 {{ form_widget(form._token) }}
             </div>
-
             {% if app.current_route != "app_delivery_note_new" %}
                 <div class="card">
                     <div class="card-body p-0">
@@ -160,7 +188,7 @@ Modification/Consultation bon sortie
                                                             <p class="m-0 mt-1">
                                                                 <input type="text" readonly  name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][ref]" required="required" maxlength="255" class="mb-0 form-control form-control-sm" placeholder="reference" value="{{ deliveryNoteProduct.product.ref }}">
                                                             </p>
-                                                            <input type="hidden" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][id]" value="new">
+                                                            <input type="hidden" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][id]" value="{{ deliveryNoteProduct.product.id }}">
                                                         </div>
                                                     </div>
                                                 </td>
@@ -219,8 +247,15 @@ Modification/Consultation bon sortie
                             <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
                                 <div class="flex align-items-start flex-column">
                                     <h6>Notes</h6>
+                                    <p class="mb-0 my-2" style="color: darkred">Attention : Une fois le bon de livraison généré, ce bon de sortie est verrouillé <br> pour des raisons de cohérence de stock. Si vous avez besoin de faire des changements, annulez le bon de livraison<br> et effectuez les modifications sur le bon de sortie avant de le regénérer.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center p-4">
+                                <div class="flex align-items-start flex-column">
+                                    <h6>Notes</h6>
                                     <p class="mb-0 my-2" style="color: red">Une fois que vous avez apporté les modifications nécessaires aux lignes de l'article,<br> n'oubliez pas de cliquer sur le bouton "Enregistrer" pour les appliquer.</p>
                                 </div>
+
                                 <div>
                                     <button class="btn btn-secondary px-4" disabled>
                                         <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -568,7 +603,7 @@ Modification/Consultation bon sortie
                         var $newProductelementpicture = $("[name='" + elementpicture + "']");
                         $newProductelementpicture.attr("src", "{{ app.request.schemeAndHttpHost }}/data/images/products/default.png");
                         calculateSumFooterElements();
-                        
+
                     }
                 });
 
