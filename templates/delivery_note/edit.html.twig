@@ -143,6 +143,53 @@ Modification/Consultation bon sortie
                                         </tr>
                                         </thead>
                                         <tbody id="delivery_noteProductsBody">
+                                        {% for deliveryNoteProduct in deliveryNoteProducts %}
+                                            <tr class="white-space-no-wrap odd productRow{{ deliveryNoteProduct.product.id }}"  data-productRow="{{ deliveryNoteProduct.product.id }}">
+                                                <td class=""  style="min-width: 500px">
+                                                    <div class="active-project-1 d-flex align-items-center mt-0 ">
+                                                        <div class="h-avatar is-medium">
+                                                            <img class="avatar rounded" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][picture]" onerror="this.onerror=null;this.src='{{ asset('data/images/products/default.png') }}';"  alt="" src="{{ asset('data/images/products/'~deliveryNoteProduct.product.picture) }}">
+                                                        </div>
+                                                        <div class="data-content" style="min-width: 400px;">
+                                                            <div>
+                                                                <input type="text" readonly id="selectProducts{{ deliveryNoteProduct.product.id }}" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][idProduct]"  class="form-select form-control selectedProductItems">
+                                                            </div>
+                                                            <p class="m-0 mt-1">
+                                                                <input type="text" readonly name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][brand]" required="required" maxlength="255" class="mb-0 form-control form-control-sm" placeholder="Marque" value="{{ deliveryNoteProduct.product.brand }}">
+                                                            </p>
+                                                            <p class="m-0 mt-1">
+                                                                <input type="text" readonly  name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][ref]" required="required" maxlength="255" class="mb-0 form-control form-control-sm" placeholder="reference" value="{{ deliveryNoteProduct.product.ref }}">
+                                                            </p>
+                                                            <input type="hidden" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][id]" value="new">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="number" onchange="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" onkeyup="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" onkeydown="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')"  name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][quantity]" required="required" class="form-control form-control-sm" placeholder="Quantity" value="{{ deliveryNoteProduct.quantity }}">
+                                                </td>
+                                                <td>
+                                                    <input readonly type="text" inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][priceHt]" class="form-control form-control-sm" value="{{ deliveryNoteProduct.priceHt }}">
+                                                </td>
+                                                <td>
+                                                    <input readonly type="text" inputmode="decimal" step="0.01" required="required"  name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][taxe]" class="form-control form-control-sm"   value="{{ deliveryNoteProduct.taxe }}">
+                                                </td>
+                                                <td>
+                                                    <input  onchange="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" onkeyup="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" onkeydown="calculateQuantityTrigger('{{ deliveryNoteProduct.product.id }}')" type="text" id="price{{ deliveryNoteProduct.product.id }}" inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][priceTtc]" class="form-control form-control-sm products_price"  value="{{ deliveryNoteProduct.priceTtc }}">
+                                                </td>
+                                                <td class="text-left">
+                                                    <input  type="text" readonly inputmode="decimal" step="0.01" required="required" name="dataDeliveryNoteSalesProducts[{{ deliveryNoteProduct.product.id }}][priceTotalTtc]" class="form-control form-control-sm" value="{{ deliveryNoteProduct.priceTotalTtc }}">
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <a class="badge bg-danger " href="#" onclick="deleteProductRow('{{ deliveryNoteProduct.product.id }}')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer" data-href="#">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
