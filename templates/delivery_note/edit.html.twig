@@ -383,7 +383,7 @@ Modification/Consultation bon sortie
                     let url = el.getAttribute("data-url");
 
                 swal({
-                        title: 'Are you sure?',
+                        title: 'Es-tu sûr?',
                         text: "Attention : Une fois le bon de livraison généré, ce bon de sortie est verrouillé pour des raisons de cohérence de stock. Si vous avez besoin de faire des changements, annulez le bon de livraison et effectuez les modifications sur le bon de sortie avant de le regénérer.!",
                         icon: 'warning',
                         buttons: {
@@ -403,11 +403,11 @@ Modification/Consultation bon sortie
                             }
                         }
                     })
-                        .then((result) => {
-                            if (result) {
-                                window.location.href = url;
-                            }
-                        });
+                    .then((result) => {
+                        if (result) {
+                            window.location.href = url;
+                        }
+                    });
                 });
             });
         });
